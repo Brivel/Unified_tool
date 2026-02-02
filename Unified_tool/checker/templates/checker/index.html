@@ -1,0 +1,151 @@
+{% extends "checker/base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="text-center mb-5 mt-5 pt-4">
+                <h1 class="main-title mb-3">Username Scanner</h1>
+                <p class="lead text-muted opacity-75">
+                    Vérifiez la présence d'un nom d'utilisateur sur +200 plateformes
+                </p>
+            </div>
+
+            <div class="card card-glass border-0 shadow-lg overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <form method="get" action="{% url 'results' %}" class="search-form">
+                        <div class="mb-4 position-relative">
+                            <label for="id_username" class="form-label fw-semibold text-glow">
+                                Nom d'utilisateur à rechercher
+                            </label>
+                            <input 
+                                type="text" 
+                                name="username" 
+                                id="id_username" 
+                                class="form-control form-control-lg rounded-pill shadow-sm input-glow"
+                                placeholder="Entrez le username (ex: darkvador42)"
+                                required
+                                autofocus
+                            >
+                        </div>
+
+                        <!-- Optionnel : ajouter des switches ou cases à cocher -->
+                        <!--
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="fastMode" name="fast">
+                                    <label class="form-check-label" for="fastMode">Mode rapide (moins de sites)</label>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-gradient btn-lg rounded-pill shadow">
+                                <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                                Lancer la recherche
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Petit texte légal ou info en bas -->
+            <p class="text-center text-muted mt-4 small">
+                Les résultats peuvent prendre quelques secondes selon le nombre de sites vérifiés
+            </p>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .main-title {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        font-size: 3.4rem;
+        background: linear-gradient(90deg, #c084fc, #a78bfa, #7c3aed, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 300% 100%;
+        animation: gradientFlow 8s ease infinite;
+        text-shadow: 0 0 25px rgba(124, 58, 237, 0.45);
+    }
+
+    @keyframes gradientFlow {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .card-glass {
+        background: rgba(26, 26, 46, 0.58);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(124, 58, 237, 0.22);
+        border-radius: 24px;
+        transition: all 0.4s ease;
+    }
+
+    .card-glass:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 30px 70px -15px rgba(124, 58, 237, 0.38);
+    }
+
+    .btn-gradient {
+        background: linear-gradient(90deg, #7c3aed, #a78bfa, #c084fc);
+        background-size: 200% auto;
+        color: white;
+        font-weight: 600;
+        transition: all 0.4s;
+        border: none;
+    }
+
+    .btn-gradient:hover {
+        background-position: right center;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(124, 58, 237, 0.45);
+    }
+
+    .form-control-lg {
+        font-size: 1.15rem;
+        padding: 0.9rem 1.4rem;
+        border: 2px solid rgba(124, 58, 237, 0.25);
+        transition: all 0.35s;
+    }
+
+    .form-control-lg:focus {
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 0.35rem rgba(167, 139, 250, 0.22);
+        background-color: rgba(30, 30, 50, 0.7);
+    }
+
+    .input-glow:focus {
+        box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+    }
+
+    .text-glow {
+        text-shadow: 0 0 12px rgba(124, 58, 237, 0.5);
+    }
+</style>
+
+<script>
+// Très léger effet sur le bouton pendant l'envoi
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.search-form');
+    const btn = form?.querySelector('button[type="submit"]');
+    const spinner = btn?.querySelector('.spinner-border');
+
+    if (form && btn && spinner) {
+        form.addEventListener('submit', () => {
+            btn.disabled = true;
+            spinner.classList.remove('d-none');
+            btn.innerHTML = 'Recherche en cours...';
+        });
+    }
+});
+</script>
+
+{% endblock %}
