@@ -4,313 +4,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protegio WHOIS Tool</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --primary-light: #e0edff;
+            --bg: #f8fafc;
+            --bg-light: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000;
-            color: #e0e6ed;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #f0f4f8 100%);
+            color: var(--text);
             min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Navigation bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .navbar-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            overflow-x: hidden;
-            position: relative;
         }
 
-        /* Overlay glitch */
-        .glitch-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.1s;
+        .navbar-brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, #0052cc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .glitch-overlay.active { opacity: 1; }
-
-        .glitch-scanlines {
-            background: repeating-linear-gradient(0deg, rgba(0,255,157,0.05), rgba(0,255,157,0.05) 1px, transparent 1px, transparent 2px);
-            animation: scanlines 0.1s linear infinite;
-        }
-
-        .glitch-rgb {
-            background: linear-gradient(90deg, rgba(255,0,0,0.1), rgba(0,255,157,0.1), rgba(0,0,255,0.1));
-            mix-blend-mode: screen;
-            animation: rgb-shift 0.15s infinite;
-        }
-
-        .glitch-shake { animation: shake 0.5s ease-in-out; }
-
-        @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(2px); } }
-        @keyframes rgb-shift { 0% { transform: translate(0,0); } 20% { transform: translate(-5px,-3px); } 40% { transform: translate(5px,3px); } 60% { transform: translate(-3px,5px); } 80% { transform: translate(3px,-5px); } 100% { transform: translate(0,0); } }
-        @keyframes shake { 0%,100% { transform: translate(0); } 10%,30%,50%,70%,90% { transform: translate(-5px,5px); } 20%,40%,60%,80% { transform: translate(5px,-5px); } }
-
-        /* Canvas Matrix */
-        #matrix-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
+        .navbar-brand:hover {
+            opacity: 0.8;
         }
 
         .container {
-            width: 90%;
             max-width: 1000px;
-            margin: 40px auto;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-   
-}
-.animated-title {
-    font-size: 4.2rem; /* Un peu plus grand pour l'impact */
-    font-family: 'Oxanium', sans-serif;
-    font-weight: 800; /* Très bold pour le style mecha */
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #00ff9d, #00bfff, #7b5eff);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 40px rgba(0, 255, 157, 0.9);
-    animation: glow 3s ease-in-out infinite alternate, gradientMove 8s linear infinite;
-    opacity: 0;
-    letter-spacing: 4px; /* Espacement cyberpunk classique */
-}
-
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(0, 255, 157, 0.6); }
-            to { text-shadow: 0 0 50px rgba(0, 255, 157, 1), 0 0 80px rgba(0, 191, 255, 0.6); }
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        @keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        p.subtitle { font-size: 1.3rem; color: #a0e6c0; margin-bottom: 50px; opacity: 0; transform: translateY(20px); transition: all 1s ease-out; }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
 
-        .form-container { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
+        .animated-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, #0052cc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
 
-        form { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
+        @keyframes titlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
         input[type="text"] {
-            padding: 16px 24px;
-            width: 420px;
-            max-width: 100%;
-            border: 2px solid #00ff9d;
-            border-radius: 50px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #00ff9d;
-            font-size: 1.1rem;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
-            transition: all 0.4s;
+            flex: 1;
+            min-width: 280px;
+            padding: 14px 20px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: #ffffff;
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         input[type="text"]:focus {
             outline: none;
-            box-shadow: 0 0 40px rgba(0, 255, 157, 0.8);
-            transform: scale(1.05);
-            border-color: #00bfff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light), inset 0 2px 4px rgba(0, 102, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
         }
 
         .submit-btn {
-            position: relative;
-            padding: 16px 36px;
-            background: linear-gradient(90deg, #00bfff, #00ff9d);
-            color: black;
-            font-weight: bold;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, #0052cc 100%);
+            color: white;
             border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.6);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow);
+            position: relative;
             overflow: hidden;
-            transition: all 0.4s;
         }
 
         .submit-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 50px rgba(0, 255, 157, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 102, 255, 0.4);
         }
 
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.8);
-            transform: scale(0);
-            animation: ripple-effect 0.6s linear;
-            pointer-events: none;
+        .submit-btn:active {
+            transform: translateY(-1px);
         }
 
-        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            animation: shakeIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes shakeIn {
+            0% { opacity: 0; transform: translateX(-20px) rotate(-1deg); }
+            100% { opacity: 1; transform: translateX(0) rotate(0); }
+        }
 
         .results {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #00ff9d;
-            border-radius: 15px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 0 40px rgba(0, 255, 157, 0.4);
+            box-shadow: var(--shadow);
             margin-top: 20px;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s ease-out;
-            backdrop-filter: blur(5px);
+            animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .results.show { opacity: 1; transform: translateY(0); }
+        .results h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
 
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1.1rem; color: #00ff9d; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
 
         th {
-            background: rgba(0, 191, 255, 0.2);
-            color: #00ff9d;
-            padding: 16px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 14px;
             text-align: left;
-            border-bottom: 2px solid #00ff9d;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
         }
 
         td {
-            padding: 16px;
-            background: rgba(0, 30, 20, 0.3);
-            border-bottom: 1px solid rgba(0, 255, 157, 0.3);
-            white-space: pre-wrap;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            transition: background-color 0.2s ease;
         }
 
-        tr:hover td { background: rgba(0, 255, 157, 0.1); }
-
-        .error {
-            color: #ff3366;
-            font-size: 1.3rem;
-            background: rgba(255, 51, 102, 0.15);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #ff3366;
-            margin: 20px 0;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.5s;
+        tr:hover {
+            background: #f8fafc;
         }
 
-        .error.show { opacity: 1; transform: scale(1); }
-
-        details { margin-top: 30px; text-align: left; }
+        details {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
         summary {
             cursor: pointer;
-            color: #00ff9d;
-            font-weight: bold;
-            font-size: 1.2rem;
-            padding: 12px;
-            background: rgba(0, 255, 157, 0.1);
-            border-radius: 10px;
-            border: 1px solid #00ff9d;
-            transition: all 0.3s;
+            padding: 14px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            user-select: none;
         }
 
-        summary:hover { background: rgba(0, 255, 157, 0.3); }
+        summary:hover {
+            background: #c5deff;
+        }
 
         pre {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
+            background: #f8fafc;
+            padding: 16px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            color: var(--text-muted);
             white-space: pre-wrap;
-            color: #00ff9d;
-            font-size: 0.95rem;
-            opacity: 0;
-            transition: opacity 0.6s;
-            border: 1px solid #00ff9d;
         }
-
-        details[open] pre { opacity: 1; }
 
         footer {
-            margin-top: 100px;
-            color: #00ff9d;
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-muted);
             font-size: 0.9rem;
-            z-index: 1;
-            text-shadow: 0 0 10px #00ff9d;
         }
 
-        /* Bouton contrôle son */
-        #sound-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 255, 157, 0.2);
-            border: 2px solid #00ff9d;
-            border-radius: 50%;
-            color: #00ff9d;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
-            transition: all 0.3s;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #sound-toggle:hover {
-            background: rgba(0, 255, 157, 0.4);
-            transform: scale(1.1);
-        }
-
-        #sound-toggle.muted {
-            color: #666;
-            border-color: #666;
+        @media (max-width: 768px) {
+            .animated-title { font-size: 2.2rem; }
+            form { flex-direction: column; }
+            input[type="text"], .submit-btn { width: 100%; }
+            .container { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Overlay glitch -->
-    <div class="glitch-overlay" id="glitch-overlay">
-        <div class="glitch-scanlines"></div>
-        <div class="glitch-rgb"></div>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a class="navbar-brand" href="/"><i class="fas fa-shield-alt"></i> PROTEGIO</a>
+        </div>
     </div>
 
-    <!-- Canvas Matrix -->
-    <canvas id="matrix-canvas"></canvas>
-
-    <!-- Bouton contrôle son -->
-    <div id="sound-toggle" title="Activer le son cyberpunk">🔊</div>
-
-    <!-- Audio ambiance cyberpunk (boucle infinie) -->
-    <audio id="cyberpunk-ambiance" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/23/audio_4f2a2b5d5a.mp3?filename=cyberpunk-121967.mp3" type="audio/mpeg">
-        Votre navigateur ne supporte pas l'audio.
-    </audio>
-
     <div class="container">
-        <h1 class="animated-title" id="main-title">Protegio WHOIS Tool</h1>
-        <p class="subtitle" id="subtitle">Outil de reconnaissance avancée pour l'analyse de domaines</p>
+        <div class="header">
+            <h1 class="animated-title">WHOIS Lookup</h1>
+            <p class="subtitle">Analysez les informations d'enregistrement de domaines</p>
+        </div>
 
-        <div class="form-container" id="form-container">
+        <div class="form-container">
             <form method="post" id="whois-form">
                 {% csrf_token %}
                 <input type="text" name="domain" placeholder="Entrez un domaine (ex: google.com)" required value="{{ domain|default:'' }}">
-                <button type="submit" class="submit-btn" id="submit-btn">Analyser</button>
+                <button type="submit" class="submit-btn">Analyser</button>
             </form>
         </div>
 
         {% if error %}
-            <div class="error show">
-                <strong>Erreur :</strong> {{ error }}
+            <div class="error">
+                <i class="fas fa-exclamation-circle"></i> <strong>Erreur :</strong> {{ error }}
             </div>
         {% endif %}
 
         {% if domain_info %}
-            <div class="results show" id="results">
-                <h2 style="color: #00ff9d; margin-bottom: 20px; text-shadow: 0 0 20px #00ff9d;">
-                    Résultats WHOIS pour <strong>{{ domain }}</strong>
-                </h2>
+            <div class="results" id="results">
+                <h2><i class="fas fa-info-circle"></i> Résultats WHOIS pour <strong>{{ domain }}</strong></h2>
 
                 <table>
                     <tr><th>Adresse IP</th>             <td>{{ ip_address|default:"Non résolu" }}</td></tr>
@@ -326,7 +338,7 @@
                 </table>
 
                 <details>
-                    <summary>Voir les données WHOIS brutes</summary>
+                    <summary><i class="fas fa-code"></i> Voir les données WHOIS brutes</summary>
                     <pre>{{ raw_whois }}</pre>
                 </details>
             </div>
@@ -334,125 +346,50 @@
     </div>
 
     <footer>
-        Protegio Tools © 2026 - Outil de reconnaissance éthique
+        <p>Protegio Tools © 2026 — Outil de reconnaissance éthique</p>
     </footer>
 
     <script>
-        // === ANIMATIONS DE BASE ===
+        // Animation fluide au chargement
         window.addEventListener('load', () => {
-            document.querySelector('.animated-title').style.opacity = '1';
-            document.querySelector('.subtitle').style.opacity = '1';
-            document.querySelector('.subtitle').style.transform = 'translateY(0)';
-            document.querySelector('.form-container').style.opacity = '1';
-            document.querySelector('.form-container').style.transform = 'translateY(0)';
-        });
-
-        // Ripple bouton
-        const btn = document.getElementById('submit-btn');
-        btn.addEventListener('click', function(e) {
-            let ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            let x = e.clientX - e.target.offsetLeft;
-            let y = e.clientY - e.target.offsetTop;
-            ripple.style.left = `${x}px`;
-            ripple.style.top = `${y}px`;
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
-
-        // Résultats
-        {% if domain_info or error %}
-            setTimeout(() => {
-                const results = document.getElementById('results');
-                if (results) results.classList.add('show');
-            }, 300);
-        {% endif %}
-
-        // === EFFET MATRIX ===
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        const matrixChars = 'アカサタナハマヤラワガザダバパイキシチニヒミリギジヂビピウクステノフムユルグズドブプエケセテネヘメレゲゼデベペオコソトホモヨロゴゾドボポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const fontSize = 14;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(columns).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#00ff9d';
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-                ctx.fillText(text, x, y);
-
-                if (Math.random() > 0.975) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(text, x, y);
-                    ctx.fillStyle = '#00ff9d';
-                }
-
-                if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(drawMatrix, 35);
-
-        // === EFFET GLITCH ALÉATOIRE ===
-        const glitchOverlay = document.getElementById('glitch-overlay');
-        const body = document.body;
-
-        function triggerGlitch() {
-            glitchOverlay.classList.add('active');
-            body.classList.add('glitch-shake');
-            const duration = Math.random() * 400 + 200;
-            setTimeout(() => {
-                glitchOverlay.classList.remove('active');
-                body.classList.remove('glitch-shake');
-            }, duration);
-        }
-
-        function scheduleGlitch() {
-            const delay = Math.random() * 8000 + 4000;
-            setTimeout(() => {
-                triggerGlitch();
-                scheduleGlitch();
-            }, delay);
-        }
-        setTimeout(scheduleGlitch, 3000);
-
-        // === SON D'AMBIANCE CYBERPUNK ===
-        const audio = document.getElementById('cyberpunk-ambiance');
-        const soundToggle = document.getElementById('sound-toggle');
-        let soundEnabled = false;
-
-        // Les navigateurs bloquent l'autoplay → on attend une interaction
-        soundToggle.addEventListener('click', () => {
-            if (soundEnabled) {
-                audio.pause();
-                soundToggle.classList.add('muted');
-                soundToggle.innerHTML = '🔇';
-                soundEnabled = false;
-            } else {
-                audio.volume = 0.3; // Volume doux
-                audio.play().catch(e => console.log("Audio bloqué :", e));
-                soundToggle.classList.remove('muted');
-                soundToggle.innerHTML = '🔊';
-                soundEnabled = true;
+            const results = document.getElementById('results');
+            if (results) {
+                results.style.animation = 'fadeInUp 0.6s ease';
             }
         });
 
-        // Message discret pour inviter à activer le son
-        soundToggle.title = "Cliquez pour activer l'ambiance sonore cyberpunk";
+        // Ripple effect au clic
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '0';
+                ripple.style.height = '0';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255,255,255,0.5)';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                from { width: 0; height: 0; }
+                to { width: 300px; height: 300px; }
+            }
+            .submit-btn { position: relative; overflow: hidden; }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
