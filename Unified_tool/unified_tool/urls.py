@@ -26,11 +26,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('protegioTools/', include('protegioTools.urls')),
     path('checker/', include('checker.urls')),
-<<<<<<< HEAD
     path('scanner/', include('scanner.urls')),
-
-=======
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
 ]
 
 if settings.DEBUG:

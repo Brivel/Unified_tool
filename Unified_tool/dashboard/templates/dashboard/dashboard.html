@@ -12,24 +12,6 @@
 
     <style>
         :root {
-<<<<<<< HEAD
-            --bg-main: #0d1117;
-            --bg-card: #161b22;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --border: #30363d;
-
-            /* Couleurs par catégorie */
-            --recon-passive: #58a6ff;     /* Bleu clair - reconnaissance passive */
-            --recon-active: #f0883e;      /* Orange - reconnaissance active */
-            --scanning:    #3fb950;       /* Vert - scanning */
-            --exploitation:#f26161;       /* Rouge - exploitation */
-
-            --gradient-blue:   linear-gradient(135deg, #1e6feb 0%, #58a6ff 100%);
-            --gradient-orange: linear-gradient(135deg, #f0883e 0%, #ffab6b 100%);
-            --gradient-green:  linear-gradient(135deg, #2ea44f 0%, #3fb950 100%);
-            --gradient-red:    linear-gradient(135deg, #d73a49 0%, #f26161 100%);
-=======
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #1e293b;
@@ -42,7 +24,17 @@
             --gradient: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
+
+            /* Couleurs par catégorie */
+            --recon-passive: #58a6ff;     /* Bleu clair - reconnaissance passive */
+            --recon-active: #f0883e;      /* Orange - reconnaissance active */
+            --scanning:    #3fb950;       /* Vert - scanning */
+            --exploitation:#f26161;       /* Rouge - exploitation */
+
+            --gradient-blue:   linear-gradient(135deg, #1e6feb 0%, #58a6ff 100%);
+            --gradient-orange: linear-gradient(135deg, #f0883e 0%, #ffab6b 100%);
+            --gradient-green:  linear-gradient(135deg, #2ea44f 0%, #3fb950 100%);
+            --gradient-red:    linear-gradient(135deg, #d73a49 0%, #f26161 100%);
         }
 
         body {
@@ -62,11 +54,8 @@
         .header {
             padding: 6rem 0 4rem;
             text-align: center;
-<<<<<<< HEAD
-=======
             position: relative;
             animation: slideInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
         }
 
         .header h1 {
@@ -76,10 +65,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-<<<<<<< HEAD
-            margin-bottom: 0.5rem;
-            letter-spacing: -1.5px;
-=======
             margin-bottom: 0.6rem;
             letter-spacing: -1px;
             animation: gradientShift 8s ease infinite;
@@ -93,7 +78,6 @@
         @keyframes slideInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
         }
 
         .header .subtitle {
@@ -154,8 +138,6 @@
             overflow: hidden;
             transition: all 0.3s ease;
             height: 100%;
-<<<<<<< HEAD
-=======
             position: relative;
             animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
         }
@@ -169,7 +151,6 @@
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
         }
 
         .tool-card:hover {
@@ -183,20 +164,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-<<<<<<< HEAD
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             background: var(--card-bg-icon);
             color: var(--card-accent);
-=======
-            font-size: 2.8rem;
-            color: var(--accent);
             transition: all 0.3s ease;
         }
 
         .tool-card:hover .card-icon-wrapper {
             background: rgba(88,166,255,0.15);
             transform: scale(1.1);
->>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
         }
 
         .card-body {
