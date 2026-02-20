@@ -6,5 +6,6 @@ def dashboard_home(request):
         'protegioTools_uses': 42,
         'project_uses': 28,
         'dns_tool_uses': 15,
+        'scanner_uses': 111,  
     }
     return render(request, 'dashboard/dashboard.html', {'stats': stats})

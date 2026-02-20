@@ -22,5 +22,6 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),  # Dashboard comme page d'accueil
     path('protegioTools/', include('protegioTools.urls')),  # Outil 1 à /tool1/
     path('checker/', include('checker.urls')),
+    path('scanner/', include('scanner.urls')),
 
 ]
