@@ -16,12 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='dashboard/', permanent=False)),
     path('admin/', admin.site.urls),
-    path('dashboard/', include('dashboard.urls')),  # Dashboard comme page d'accueil
-    path('protegioTools/', include('protegioTools.urls')),  # Outil 1 à /tool1/
+    path('dashboard/', include('dashboard.urls')),
+    path('protegioTools/', include('protegioTools.urls')),
     path('checker/', include('checker.urls')),
+<<<<<<< HEAD
     path('scanner/', include('scanner.urls')),
 
+=======
+>>>>>>> c41fc828413f8886d04165a59ba1348e9d3fa38b
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
