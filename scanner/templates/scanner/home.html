@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OWASP ZAP Scanner — Sécurité Web</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --accent-light: #d1fae5;
+      --border: #e2e8f0;
+      --gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+    }
+
+    .title-glow {
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 8s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.9; }
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-card);
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+      border-color: var(--accent);
+    }
+
+    .btn-danger, .btn-scan {
+      background: var(--gradient);
+      border: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s;
+      color: white;
+    }
+
+    .btn-danger:hover, .btn-scan:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.3);
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #047857 100%);
+    }
+
+    .btn-danger::before, .btn-scan::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -100%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.7s;
+    }
+
+    .btn-danger:hover::before, .btn-scan:hover::before {
+      left: 100%;
+    }
+
+    .form-control, .form-select {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.1);
+      background: white;
+    }
+
+    .form-label {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .form-check-label {
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #92400e;
+    }
+
+    .alert-info {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #065f46;
+    }
+
+    .scan-line {
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #10b981, transparent);
+      box-shadow: 0 0 20px #10b981;
+      animation: scan 7s linear infinite;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    @keyframes scan {
+      0%   { top: -100%; }
+      50%  { top: 100%; }
+      100% { top: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scan-line, .title-glow { animation: none !important; }
+    }
+
+    .logo-zap {
+      height: 80px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-dark);
+    }
+
+    small {
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scan-line"></div>
+  <div class="particles" id="particles-js"></div>
+
+  <div class="container mt-5 pt-4">
+    <div class="text-center mb-5">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/OWASP_ZAP_logo.svg" alt="OWASP ZAP Logo Officiel" class="logo-zap">
+      <h1 class="title-glow">
+        <i class="fas fa-shield-halved me-3"></i>
+        OWASP ZAP Scanner
+      </h1>
+      <p class="text-white-50">Zed Attack Proxy – Outil open source de test de sécurité web</p>
+    </div>
+
+    <div class="alert alert-warning d-flex align-items-center shadow-sm mb-4">
+      <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+      <div>
+        <strong>Attention – Usage strictement encadré :</strong><br/>
+        N’utilisez cet outil que sur vos propres sites ou avec une <strong>autorisation écrite explicite</strong> du propriétaire.<br/>
+        Le scan <strong>actif</strong> est intrusif et peut causer des dommages (suppression de données, plantage, etc.).
+      </div>
+    </div>
+
+    <div class="card mx-auto shadow-lg mb-4">
+      <div class="card-body p-4 p-md-5">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">{{ form.target_url.label }}</label>
+            {{ form.target_url }}
+            <small class="text-muted d-block mt-1">Exemple : https://example.com</small>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">{{ form.max_depth.label }}</label>
+              {{ form.max_depth }}
+              <small class="text-muted d-block mt-1">0 = profondeur illimitée (non recommandé)</small>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Niveau d'alerte minimum</label>
+              <select name="alert_level" class="form-select">
+                <option value="LOW">Faible (tous risques)</option>
+                <option value="MEDIUM" selected>Moyen (défaut recommandé)</option>
+                <option value="HIGH">Élevé (alertes critiques uniquement)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Type de scan</label>
+            <div class="d-flex flex-column gap-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="scan_type" id="passive" value="passive" checked>
+                <label class="form-check-label" for="passive">
+                  <strong>Scan Passif</strong> – Non intrusif
+                  <small class="d-block text-muted">Analyse les échanges HTTP déjà effectués sans envoyer de payloads malveillants. Détecte : headers manquants, cookies insecure, fuites d’infos, etc.</small>
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="scan_type" id="active" value="active">
+                <label class="form-check-label" for="active">
+                  <strong>Scan Actif</strong> – Tests approfondis
+                  <small class="d-block text-muted">Injection de payloads (XSS, SQLi, Command Injection, Path Traversal, etc.). Nécessite une autorisation explicite.</small>
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="scan_type" id="both" value="both">
+                <label class="form-check-label" for="both">
+                  <strong>Passif + Actif</strong> (complet)
+                  <small class="d-block text-muted">Commence par un scan passif puis lance un scan actif sur les URLs découvertes.</small>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Politique de scan (amélioration des analyses)</label>
+            <select name="scan_policy" class="form-select">
+              <option value="default" selected>Par défaut (équilibré OWASP)</option>
+              <option value="light">Léger (rapide, moins de faux positifs)</option>
+              <option value="strict">Strict (OWASP Top 10 + règles avancées)</option>
+              <option value="custom">Personnalisée (à configurer dans ZAP)</option>
+            </select>
+            <small class="text-muted d-block mt-1">La politique "Strict" active plus de règles (XSS avancé, injections complexes, etc.)</small>
+          </div>
+
+          <button type="submit" class="btn btn-danger btn-lg w-100 py-3 fw-bold">
+            <i class="fas fa-rocket-launch me-2"></i>
+            LANCER LE SCAN
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="alert alert-info shadow-sm mb-5">
+      <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Rappel sur OWASP ZAP</h5>
+      <ul class="mb-0">
+        <li><strong>Passif</strong> : analyse en temps réel sans modification du trafic (sécurisé)</li>
+        <li><strong>Actif</strong> : envoie des attaques automatisées (XSS, SQL Injection, XXE, etc.)</li>
+        <li>Spider + AJAX Spider + Active Scan Rules + Passive Scan Rules</li>
+        <li>Supporte l'API, l'automatisation, les add-ons Marketplace</li>
+      </ul>
+    </div>
+
+    <div class="text-center mt-5 text-white-50 small">
+      Projet local sécurisé • {{ request.META.HTTP_HOST }} • {{ now|date:"Y" }} •
+      Basé sur OWASP ZAP – <a href="https://www.zaproxy.org/" class="text-danger-emphasis text-decoration-none">zaproxy.org</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ff4d4d" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.4, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": false },
+        "move": {
+          "enable": true,
+          "speed": 1.2,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false } } },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
