@@ -1,0 +1,78 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fa-solid fa-shield"></i> Test de Sécurité API</h1>
+
+<div class="card mb-4">
+    <div class="card-header"><h5>Nouveau test</h5></div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-5">
+                    <input type="url" class="form-control" name="api_url" placeholder="https://api.example.com" required>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" name="test_type" required>
+                        <option value="">-- Sélectionner un test --</option>
+                        <option value="auth">Authentification</option>
+                        <option value="rate_limit">Rate Limiting</option>
+                        <option value="injection">Injection</option>
+                        <option value="cors">CORS</option>
+                        <option value="headers">Headers de Sécurité</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-play"></i> Tester</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5>Résultats ({{ tests|length }})</h5></div>
+    {% if tests %}
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>URL API</th>
+                    <th>Type</th>
+                    <th>Vulnérable</th>
+                    <th>Problèmes</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                <tr>
+                    <td><code>{{ test.api_url }}</code></td>
+                    <td><span class="badge bg-info">{{ test.get_test_type_display }}</span></td>
+                    <td>
+                        {% if test.vulnerable %}
+                        <span class="badge badge-high">OUI</span>
+                        {% else %}
+                        <span class="badge bg-success">NON</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge" style="background-color: {% if test.vulnerable %}#f26161{% else %}#2ecc71{% endif %}">{{ test.issues_found }}</span></td>
+                    <td>{{ test.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'integrations:api_detail' test.id %}" class="btn btn-sm btn-info">
+                            <i class="fa-solid fa-eye"></i> Détails
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body text-center text-muted">
+        <p><i class="fa-solid fa-inbox"></i> Aucun résultat</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

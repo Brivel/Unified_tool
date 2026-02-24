@@ -1,0 +1,104 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fa-solid fa-microscope"></i> Nuclei Scanner</h1>
+        <p class="text-muted">Template-based Vulnerability Scanner</p>
+    </div>
+</div>
+
+<!-- Formulaire de scan -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Démarrer un nouveau scan</h5>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="target" class="form-control" placeholder="Exemple: example.com" required>
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa-solid fa-play"></i> Démarrer le scan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Historique des scans -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Historique des scans</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Target</th>
+                    <th>Status</th>
+                    <th>Vulnérabilités</th>
+                    <th>Critical</th>
+                    <th>High</th>
+                    <th>Medium</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td><strong>{{ scan.target }}</strong></td>
+                    <td>
+                        {% if scan.status == 'completed' %}
+                            <span class="badge bg-success">Complété</span>
+                        {% elif scan.status == 'running' %}
+                            <span class="badge bg-info">En cours...</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ scan.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ scan.vulnerabilities_found }}</strong></td>
+                    <td><span class="badge badge-critical">{{ scan.critical_count }}</span></td>
+                    <td><span class="badge badge-high">{{ scan.high_count }}</span></td>
+                    <td><span class="badge badge-medium">{{ scan.medium_count }}</span></td>
+                    <td>{{ scan.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'integrations:nuclei_scan_detail' scan.id %}" class="btn btn-sm btn-primary">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Aucun scan effectué</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if scans.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination">
+        {% if scans.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">Premier</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ scans.previous_page_number }}">Précédent</a></li>
+        {% endif %}
+        
+        {% for num in scans.paginator.page_range %}
+            {% if scans.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if scans.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ scans.next_page_number }}">Suivant</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ scans.paginator.num_pages }}">Dernier</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

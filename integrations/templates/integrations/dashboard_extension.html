@@ -1,0 +1,111 @@
+{% extends "dashboard/dashboard.html" %}
+
+{% block extra_content %}
+<section class="tools-category recon-active" style="margin-top: 4rem;">
+    <div class="category-header">
+        <span class="category-badge">
+            <i class="fa-solid fa-wires"></i>
+            INTÉGRATIONS AVANCÉES
+        </span>
+        <h2 class="section-title">Scanners Professionnels</h2>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Nuclei Scanner -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(240,136,62,0.08); color: #f0883e;">
+                    <i class="fa-solid fa-microscope"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Nuclei Scanner</h3>
+                    <div class="card-stats">Template-based Vulnerability Scanner</div>
+                    <a href="/integrations/nuclei/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Port Scanner -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(88,166,255,0.08); color: #58a6ff;">
+                    <i class="fa-solid fa-sitemap"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Port Scanner</h3>
+                    <div class="card-stats">Nmap-based Port Discovery</div>
+                    <a href="/integrations/ports/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SSL/TLS Checker -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(63,185,80,0.08); color: #3fb950;">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">SSL/TLS Checker</h3>
+                    <div class="card-stats">Certificate & Encryption Analysis</div>
+                    <a href="/integrations/ssl/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Security Tester -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(242,97,97,0.08); color: #f26161;">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">API Security Tester</h3>
+                    <div class="card-stats">Authentication & Rate Limiting Tests</div>
+                    <a href="/integrations/api-security/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CVE Lookup -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(163,113,247,0.08); color: #a371f7;">
+                    <i class="fa-solid fa-bug"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">CVE Lookup</h3>
+                    <div class="card-stats">Vulnerability Database Search</div>
+                    <a href="/integrations/cve/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Reports -->
+        <div class="col">
+            <div class="tool-card">
+                <div class="card-icon-wrapper" style="background: rgba(88,166,255,0.08); color: #58a6ff;">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Full Audit Report</h3>
+                    <div class="card-stats">Complete Security Assessment</div>
+                    <a href="/integrations/reports/" class="btn-tool w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

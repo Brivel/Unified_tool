@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,9 +41,6 @@ INSTALLED_APPS = [
     'checker',
     'dashboard',
     'scanner',
-    'intruder',
-    'dns_tool',
-    'perforNet',
 ]
 
 MIDDLEWARE = [
@@ -123,11 +119,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+#configuration OWASP ZAP
+ZAP_DAEMON_URL = 'http://127.0.0.1:8080'
+ZAP_API_KEY = ''
+ZAP_TIMEOUT = 900
 
-# OWASP ZAP Configuration
-ZAP_DAEMON_URL = os.environ.get('ZAP_DAEMON_URL', 'http://127.0.0.1:8080')
-ZAP_API_KEY = os.environ.get('ZAP_API_KEY', '')
-ZAP_TIMEOUT = int(os.environ.get('ZAP_TIMEOUT', '300'))  # 5 minutes par défaut
-
-# Default ID for TYPE
-DEFAULT_TYPE=int(os.environ.get('DEFAULT_TYPE', '1'))

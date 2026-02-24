@@ -1,0 +1,264 @@
+{% extends "base_advanced.html" %}
+
+{% block title %}PROTEGIO — Full-Scope-Pentesting Dashboard{% endblock %}
+
+{% block breadcrumb %}
+<a class="breadcrumb-item" href="/"><i class="fa-solid fa-house"></i> Accueil</a>
+<span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+<span class="breadcrumb-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</span>
+{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --recon-passive: #58a6ff;     /* Bleu clair - reconnaissance passive */
+        --recon-active: #f0883e;      /* Orange - reconnaissance active */
+        --scanning:    #3fb950;       /* Vert - scanning */
+        --exploitation:#f26161;       /* Rouge - exploitation */
+
+        --gradient-blue:   linear-gradient(135deg, #1e6feb 0%, #58a6ff 100%);
+        --gradient-orange: linear-gradient(135deg, #f0883e 0%, #ffab6b 100%);
+        --gradient-green:  linear-gradient(135deg, #2ea44f 0%, #3fb950 100%);
+        --gradient-red:    linear-gradient(135deg, #d73a49 0%, #f26161 100%);
+    }
+
+    .stat-card {
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(88, 166, 255, 0.2);
+    }
+
+    .stat-card.blue { background: linear-gradient(135deg, rgba(30, 111, 235, 0.15) 0%, rgba(88, 166, 255, 0.1) 100%); border-left: 4px solid #58a6ff; }
+    .stat-card.orange { background: linear-gradient(135deg, rgba(240, 136, 62, 0.15) 0%, rgba(255, 171, 107, 0.1) 100%); border-left: 4px solid #f0883e; }
+    .stat-card.green { background: linear-gradient(135deg, rgba(46, 164, 79, 0.15) 0%, rgba(63, 185, 80, 0.1) 100%); border-left: 4px solid #3fb950; }
+    .stat-card.red { background: linear-gradient(135deg, rgba(215, 58, 73, 0.15) 0%, rgba(242, 97, 97, 0.1) 100%); border-left: 4px solid #f26161; }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .stat-label {
+        font-size:  14px;
+        opacity: 0.7;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    @media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .chart-container {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .chart-container:hover {
+        box-shadow: 0 10px 30px rgba(88, 166, 255, 0.1);
+    }
+
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+    }
+
+    .toast {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        animation: slideInRight 0.4s ease-out;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 40px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--accent-primary);
+    }
+</style>
+
+<!-- STATS SECTION -->
+<div class="section-title"><i class="fa-solid fa-gauge"></i> Statistiques en Temps Réel</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card blue">
+            <div class="stat-label">Scans Total</div>
+            <div class="stat-value" id="totalScans">0</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card red">
+            <div class="stat-label">Alertes Critiques</div>
+            <div class="stat-value" id="criticalAlerts">0</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card orange">
+            <div class="stat-label">Vulnérabilités</div>
+            <div class="stat-value" id="vulnerabilities">0</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card green">
+            <div class="stat-label">Outils Actifs</div>
+            <div class="stat-value">5</div>
+        </div>
+    </div>
+</div>
+
+<!-- CHARTS SECTION -->
+<div class="section-title"><i class="fa-solid fa-chart-line"></i> Graphiques & Analytics</div>
+<div class="charts-grid">
+    <div class="chart-container">
+        <h5>Distribution des Vulnérabilités</h5>
+        <canvas id="vulnerabilityChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h5>Historique des Scans (7 jours)</h5>
+        <canvas id="scanHistoryChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h5>Utilisation par Outil</h5>
+        <canvas id="toolUsageChart"></canvas>
+    </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="toast-container" id="notificationContainer"></div>
+
+<!-- LOAD CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Load and display statistics
+    async function loadStats() {
+        try {
+            const response = await fetch('/dashboard/api/stats/');
+            const data = await response.json();
+            
+            document.getElementById('totalScans').textContent = data.total_scans || 0;
+            document.getElementById('criticalAlerts').textContent = data.critical_alerts || 0;
+            document.getElementById('vulnerabilities').textContent = data.vulnerabilities || 0;
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+
+    // Initialize charts
+    function initCharts() {
+        // Vulnerability Distribution Chart
+        const vulnCtx = document.getElementById('vulnerabilityChart')?.getContext('2d');
+        if (vulnCtx) {
+            new Chart(vulnCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+                    datasets: [{
+                        data: [12, 28, 45, 30, 18],
+                        backgroundColor: ['#f26161', '#f0883e', '#ffc107', '#3fb950', '#58a6ff'],
+                        borderColor: 'var(--bg-main)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { labels: { color: 'var(--text-main)' } } }
+                }
+            });
+        }
+
+        // Scan History Chart
+        const scanCtx = document.getElementById('scanHistoryChart')?.getContext('2d');
+        if (scanCtx) {
+            new Chart(scanCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Scans',
+                        data: [12, 19, 3, 5, 2, 3, 8],
+                        borderColor: '#58a6ff',
+                        backgroundColor: 'rgba(88, 166, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: 'var(--text-main)' } } },
+                    scales: {
+                        y: { ticks: { color: 'var(--text-muted)' }, grid: { color: 'var(--border-color)' } },
+                        x: { ticks: { color: 'var(--text-muted)' }, grid: { color: 'var(--border-color)' } }
+                    }
+                }
+            });
+        }
+
+        // Tool Usage Chart
+        const toolCtx = document.getElementById('toolUsageChart')?.getContext('2d');
+        if (toolCtx) {
+            new Chart(toolCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Nuclei', 'Nmap', 'SSL', 'API', 'CVE'],
+                    datasets: [{
+                        label: 'Usage Count',
+                        data: [65, 59, 45, 52, 38],
+                        backgroundColor: ['#58a6ff', '#f0883e', '#3fb950', '#f26161', '#ffc107'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: 'var(--text-main)' } } },
+                    scales: {
+                        y: { ticks: { color: 'var(--text-muted)' }, grid: { color: 'var(--border-color)' } },
+                        x: { ticks: { color: 'var(--text-muted)' }, grid: { color: 'var(--border-color)' } }
+                    }
+                }
+            });
+        }
+    }
+
+    // Auto-refresh
+    loadStats();
+    initCharts();
+    setInterval(loadStats, 30000); // Refresh every 30 seconds
+</script>
+{% endblock %}

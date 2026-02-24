@@ -1,0 +1,56 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{% url 'integrations:ports' %}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <h1 class="mt-3"><i class="fa-solid fa-sitemap"></i> Détail du scan port</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Informations</h5></div>
+            <div class="card-body">
+                <p><strong>Target:</strong> {{ scan.target }}</p>
+                <p><strong>Status:</strong> {{ scan.get_status_display }}</p>
+                <p><strong>OS Détecté:</strong> {{ scan.os_detection }}</p>
+                <p><strong>Durée:</strong> {{ scan.duration }}s</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Ports</h5></div>
+            <div class="card-body">
+                <h6><span class="badge badge-high">Ouverts: {{ scan.open_ports_count }}</span></h6>
+                <h6><span class="badge bg-secondary">Fermés: {{ scan.closed_ports_count }}</span></h6>
+                <h6><span class="badge bg-warning">Filtrés: {{ scan.filtered_ports_count }}</span></h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if scan.ports_data %}
+<div class="card">
+    <div class="card-header"><h5>Ports Ouverts Détaillés</h5></div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr><th>Port</th><th>Service</th><th>Version</th></tr>
+            </thead>
+            <tbody>
+                {% for port, info in scan.ports_data.items %}
+                <tr>
+                    <td><strong>{{ port }}</strong></td>
+                    <td>{{ info.service }}</td>
+                    <td>{{ info.version }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

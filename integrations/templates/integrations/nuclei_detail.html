@@ -1,0 +1,88 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{% url 'integrations:nuclei' %}" class="btn btn-sm btn-outline-primary">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </a>
+        <h1 class="mt-3"><i class="fa-solid fa-microscope"></i> Détail du scan Nuclei</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Informations générales -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Informations</h5></div>
+            <div class="card-body">
+                <p><strong>Target:</strong> {{ scan.target }}</p>
+                <p><strong>Status:</strong> {{ scan.get_status_display }}</p>
+                <p><strong>Templates utilisés:</strong> {{ scan.templates_used }}</p>
+                <p><strong>Durée:</strong> {{ scan.duration }}s</p>
+                <p><strong>Créé:</strong> {{ scan.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Résultats</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <h6>Total</h6>
+                        <h3>{{ scan.vulnerabilities_found }}</h3>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-12"><span class="badge badge-critical">Critical: {{ scan.critical_count }}</span></div>
+                            <div class="col-12 mt-2"><span class="badge badge-high">High: {{ scan.high_count }}</span></div>
+                            <div class="col-12 mt-2"><span class="badge badge-medium">Medium: {{ scan.medium_count }}</span></div>
+                            <div class="col-12 mt-2"><span class="badge badge-low">Low: {{ scan.low_count }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Résultats détaillés -->
+{% if scan.results_json.results %}
+<div class="card">
+    <div class="card-header"><h5>Vulnerabilités trouvées</h5></div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Severity</th>
+                    <th>Matched At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in scan.results_json.results %}
+                <tr>
+                    <td><strong>{{ result.type }}</strong></td>
+                    <td>
+                        {% if result.severity == 'critical' %}
+                            <span class="badge badge-critical">{{ result.severity }}</span>
+                        {% elif result.severity == 'high' %}
+                            <span class="badge badge-high">{{ result.severity }}</span>
+                        {% elif result.severity == 'medium' %}
+                            <span class="badge badge-medium">{{ result.severity }}</span>
+                        {% else %}
+                            <span class="badge badge-low">{{ result.severity }}</span>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ result.matched_at }}</code></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

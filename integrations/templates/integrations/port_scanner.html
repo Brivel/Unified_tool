@@ -1,0 +1,54 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fa-solid fa-sitemap"></i> Port Scanner</h1>
+        <p class="text-muted">Nmap-based Port Discovery</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="target" class="form-control" placeholder="Target hostname or IP" required>
+                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-play"></i> Scanner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5>Résultats des scans</h5></div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Target</th>
+                    <th>Status</th>
+                    <th>Ports Ouverts</th>
+                    <th>OS Détecté</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td><strong>{{ scan.target }}</strong></td>
+                    <td><span class="badge bg-success">{{ scan.get_status_display }}</span></td>
+                    <td><span class="badge badge-high">{{ scan.open_ports_count }}</span></td>
+                    <td>{{ scan.os_detection }}</td>
+                    <td>{{ scan.created_at|date:"d/m/Y H:i" }}</td>
+                    <td><a href="{% url 'integrations:port_scan_detail' scan.id %}" class="btn btn-sm btn-primary"><i class="fa-solid fa-eye"></i></a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted">Aucun scan</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{% url 'integrations:api_security' %}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <h1 class="mt-3"><i class="fa-solid fa-shield"></i> Détail du test API</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Informations du test</h5></div>
+            <div class="card-body">
+                <p><strong>URL API:</strong> <code>{{ test.api_url }}</code></p>
+                <p><strong>Type:</strong> {{ test.get_test_type_display }}</p>
+                <p><strong>Vulnérable:</strong> 
+                    {% if test.vulnerable %}
+                    <span class="badge badge-high">OUI</span>
+                    {% else %}
+                    <span class="badge bg-success">NON</span>
+                    {% endif %}
+                </p>
+                <p><strong>Problèmes:</strong> {{ test.issues_found }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Recommandations</h5></div>
+            <div class="card-body">
+                {% if test.recommendations %}
+                <ul>
+                    {% for rec in test.recommendations %}
+                    <li>{{ rec }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">Aucune recommandation</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5>Résumé du test</h5></div>
+    <div class="card-body">
+        {% if test.test_results %}
+        <pre class="bg-dark text-light p-3" style="border-radius: 5px; overflow-x: auto;">{{ test.test_results }}</pre>
+        {% else %}
+        <p class="text-muted">Pas de détails disponibles</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

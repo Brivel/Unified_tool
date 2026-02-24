@@ -1,0 +1,85 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fa-solid fa-lock"></i> Vérificateur SSL/TLS</h1>
+
+<div class="card mb-4">
+    <div class="card-header"><h5>Nouvelle vérification</h5></div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="target" placeholder="example.com" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="port" placeholder="443" value="443">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-play"></i> Vérifier</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5>Résultats ({{ scans|length }})</h5></div>
+    {% if checks %}
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Target</th>
+                    <th>Port</th>
+                    <th>Validité</th>
+                    <th>Rating</th>
+                    <th>Problèmes</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for check in checks %}
+                <tr>
+                    <td><code>{{ check.target }}</code></td>
+                    <td>{{ check.port }}</td>
+                    <td>
+                        {% if check.cert_valid %}
+                        <span class="badge bg-success">Valide</span>
+                        {% else %}
+                        <span class="badge bg-danger">Invalide</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if check.ssl_rating == 'A+' %}
+                        <span class="badge" style="background-color: #2ecc71;">{{ check.ssl_rating }}</span>
+                        {% elif check.ssl_rating == 'A' %}
+                        <span class="badge" style="background-color: #27ae60;">{{ check.ssl_rating }}</span>
+                        {% elif check.ssl_rating == 'B' %}
+                        <span class="badge" style="background-color: #f39c12;">{{ check.ssl_rating }}</span>
+                        {% elif check.ssl_rating == 'C' %}
+                        <span class="badge" style="background-color: #e67e22;">{{ check.ssl_rating }}</span>
+                        {% elif check.ssl_rating == 'F' %}
+                        <span class="badge" style="background-color: #f26161;">{{ check.ssl_rating }}</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-warning">{{ check.security_issues|length }}</span></td>
+                    <td>{{ check.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'integrations:ssl_check_detail' check.id %}" class="btn btn-sm btn-info">
+                            <i class="fa-solid fa-eye"></i> Détails
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body text-center text-muted">
+        <p><i class="fa-solid fa-inbox"></i> Aucun résultat</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

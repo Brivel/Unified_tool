@@ -1,0 +1,83 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fa-solid fa-flask-vial"></i> Recherche CVE</h1>
+
+<div class="card mb-4">
+    <div class="card-header"><h5>Rechercher une CVE</h5></div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-8">
+                <input type="text" class="form-control" name="cve_id" placeholder="CVE-2024-1234 ou software name" value="{{ request.GET.cve_id }}" required>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-search"></i> Rechercher</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if cves %}
+<div class="card">
+    <div class="card-header"><h5>Résultats ({{ cves|length }})</h5></div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>CVE ID</th>
+                    <th>Sévérité</th>
+                    <th>CVSS</th>
+                    <th>Versions affectées</th>
+                    <th>Publication</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cve in cves %}
+                <tr>
+                    <td><code>{{ cve.cve_id }}</code></td>
+                    <td>
+                        {% if cve.severity == 'critical' %}
+                        <span class="badge badge-critical">CRITIQUE</span>
+                        {% elif cve.severity == 'high' %}
+                        <span class="badge badge-high">ÉLEVÉ</span>
+                        {% elif cve.severity == 'medium' %}
+                        <span class="badge badge-medium">MOYEN</span>
+                        {% else %}
+                        <span class="badge badge-low">BAS</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if cve.cvss_score >= 9 %}
+                        <span class="badge" style="background-color: #f26161;">{{ cve.cvss_score }}/10</span>
+                        {% elif cve.cvss_score >= 7 %}
+                        <span class="badge" style="background-color: #f0883e;">{{ cve.cvss_score }}/10</span>
+                        {% elif cve.cvss_score >= 4 %}
+                        <span class="badge" style="background-color: #f39c12;">{{ cve.cvss_score }}/10</span>
+                        {% else %}
+                        <span class="badge" style="background-color: #f1c40f;">{{ cve.cvss_score }}/10</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for version in cve.affected_versions %}
+                        <span class="badge bg-secondary">{{ version }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>{{ cve.publication_date|date:"d/m/Y" }}</td>
+                    <td>
+                        <a href="{% url 'integrations:cve_detail' cve.id %}" class="btn btn-sm btn-info">
+                            <i class="fa-solid fa-eye"></i> Détails
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% elif search_performed %}
+<div class="alert alert-info">
+    <i class="fa-solid fa-info-circle"></i> Aucune CVE trouvée pour "{{ request.GET.cve_id }}"
+</div>
+{% endif %}
+{% endblock %}

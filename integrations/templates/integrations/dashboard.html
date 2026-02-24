@@ -1,0 +1,86 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<style>
+    .tool-card {
+        background: var(--bg-card);
+        border: 2px solid var(--accent-primary);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    
+    .tool-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(88, 166, 255, 0.3);
+    }
+    
+    .tool-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+        color: var(--accent-primary);
+    }
+</style>
+
+<div class="mb-4">
+    <h1><i class="fa-solid fa-chart-line"></i> Tableau de Bord - Outils d'Intégration</h1>
+    <p class="text-muted">Sélectionnez un outil pour commencer</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a href="{% url 'integrations:nuclei' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-virus"></i></div>
+            <h5>Nuclei Scanner</h5>
+            <p class="small text-muted">Scan de vulnérabilités</p>
+        </a>
+    </div>
+    
+    <div class="col-md-4">
+        <a href="{% url 'integrations:ports' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-sitemap"></i></div>
+            <h5>Port Scanner</h5>
+            <p class="small text-muted">Scan des ports</p>
+        </a>
+    </div>
+    
+    <div class="col-md-4">
+        <a href="{% url 'integrations:ssl' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-lock"></i></div>
+            <h5>SSL/TLS Check</h5>
+            <p class="small text-muted">Vérification SSL</p>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <a href="{% url 'integrations:api_security' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-shield"></i></div>
+            <h5>API Security</h5>
+            <p class="small text-muted">Tests API</p>
+        </a>
+    </div>
+    
+    <div class="col-md-4">
+        <a href="{% url 'integrations:cve' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-bug"></i></div>
+            <h5>CVE Lookup</h5>
+            <p class="small text-muted">Recherche CVE</p>
+        </a>
+    </div>
+    
+    <div class="col-md-4">
+        <a href="{% url 'integrations:reports' %}" class="tool-card">
+            <div class="tool-icon"><i class="fa-solid fa-file-pdf"></i></div>
+            <h5>Rapports</h5>
+            <p class="small text-muted">Voir les rapports</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

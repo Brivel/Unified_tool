@@ -1,0 +1,79 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{% url 'integrations:cve' %}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <h1 class="mt-3"><i class="fa-solid fa-flask-vial"></i> Détail CVE</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Identification</h5></div>
+            <div class="card-body">
+                <p><strong>CVE ID:</strong> {{ cve.cve_id }}</p>
+                <p><strong>Sévérité:</strong> 
+                    {% if cve.severity == 'critical' %}
+                    <span class="badge badge-critical">CRITIQUE</span>
+                    {% elif cve.severity == 'high' %}
+                    <span class="badge badge-high">ÉLEVÉ</span>
+                    {% elif cve.severity == 'medium' %}
+                    <span class="badge badge-medium">MOYEN</span>
+                    {% else %}
+                    <span class="badge badge-low">BAS</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>CVSS Score</h5></div>
+            <div class="card-body text-center">
+                {% if cve.cvss_score >= 9 %}
+                <h3 style="color: #f26161;">{{ cve.cvss_score }}/10</h3>
+                {% elif cve.cvss_score >= 7 %}
+                <h3 style="color: #f0883e;">{{ cve.cvss_score }}/10</h3>
+                {% elif cve.cvss_score >= 4 %}
+                <h3 style="color: #f39c12;">{{ cve.cvss_score }}/10</h3>
+                {% else %}
+                <h3 style="color: #f1c40f;">{{ cve.cvss_score }}/10</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Dates</h5></div>
+            <div class="card-body">
+                <p><strong>Publication:</strong><br>{{ cve.publication_date|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Versions affectées</h5></div>
+            <div class="card-body">
+                {% for version in cve.affected_versions %}
+                <span class="badge bg-secondary">{{ version }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5>Références</h5></div>
+            <div class="card-body">
+                {% for ref in cve.references %}
+                <a href="{{ ref }}" target="_blank" class="d-block mb-2"><i class="fa-solid fa-link"></i> {{ ref|truncatewords:5 }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

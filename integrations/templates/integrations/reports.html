@@ -1,0 +1,100 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fa-solid fa-file-pdf"></i> Rapports d'Audit Intégrés</h1>
+
+<div class="card mb-4">
+    <div class="card-header"><h5>Filtrer les rapports</h5></div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="target" placeholder="Target (domaine, IP...)" value="{{ request.GET.target }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" name="risk_level">
+                    <option value="">-- Tous les niveaux de risque --</option>
+                    <option value="critical" {% if request.GET.risk_level == 'critical' %}selected{% endif %}>CRITIQUE</option>
+                    <option value="high" {% if request.GET.risk_level == 'high' %}selected{% endif %}>ÉLEVÉ</option>
+                    <option value="medium" {% if request.GET.risk_level == 'medium' %}selected{% endif %}>MOYEN</option>
+                    <option value="low" {% if request.GET.risk_level == 'low' %}selected{% endif %}>BAS</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-filter"></i> Filtrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5>Rapports ({{ results|length }})</h5></div>
+    {% if reports %}
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Target</th>
+                    <th>Risque</th>
+                    <th>Vulnérabilités</th>
+                    <th>Scan Nuclei</th>
+                    <th>Scan Port</th>
+                    <th>SSL/TLS</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td><code>{{ report.target }}</code></td>
+                    <td>
+                        {% if report.risk_level == 'critical' %}
+                        <span class="badge badge-critical">CRITIQUE</span>
+                        {% elif report.risk_level == 'high' %}
+                        <span class="badge badge-high">ÉLEVÉ</span>
+                        {% elif report.risk_level == 'medium' %}
+                        <span class="badge badge-medium">MOYEN</span>
+                        {% else %}
+                        <span class="badge badge-low">BAS</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge badge-high">{{ report.total_vulnerabilities }}</span></td>
+                    <td>
+                        {% if report.nuclei_scan %}
+                        <span class="badge bg-success">✓</span>
+                        {% else %}
+                        <span class="badge bg-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if report.port_scan %}
+                        <span class="badge bg-success">✓</span>
+                        {% else %}
+                        <span class="badge bg-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if report.ssl_check %}
+                        <span class="badge bg-success">✓</span>
+                        {% else %}
+                        <span class="badge bg-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ report.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'integrations:report_detail' report.id %}" class="btn btn-sm btn-info">
+                            <i class="fa-solid fa-eye"></i> Rapport
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body text-center text-muted">
+        <p><i class="fa-solid fa-inbox"></i> Aucun rapport</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

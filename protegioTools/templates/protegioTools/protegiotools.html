@@ -285,172 +285,11 @@
             font-size: 0.9rem;
         }
 
-        /* Styles pour la section d'exportation */
-        .export-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary-light) 0%, rgba(224, 237, 255, 0.5) 100%);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .export-section h3 {
-            margin: 0 0 15px 0;
-            color: var(--primary);
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .export-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-
-        .export-word {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-            color: white;
-        }
-
-        .export-word:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .export-excel {
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            color: white;
-        }
-
-        .export-excel:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
-        }
-
-        .export-btn i {
-            font-size: 1.1rem;
-        }
-
-        /* Styles pour l'historique */
-        .history-section {
-            margin-top: 40px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .history-section h3 {
-            margin: 0 0 15px 0;
-            color: var(--primary);
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .history-exports {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .history-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-
-        .history-btn-word {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-            color: white;
-        }
-
-        .history-btn-word:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.25);
-        }
-
-        .history-btn-excel {
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            color: white;
-        }
-
-        .history-btn-excel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.25);
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .history-table th {
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .history-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .history-table tr:hover {
-            background: #f8fafc;
-        }
-
-        .history-empty {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
         @media (max-width: 768px) {
             .animated-title { font-size: 2.2rem; }
             form { flex-direction: column; }
             input[type="text"], .submit-btn { width: 100%; }
             .container { padding: 20px; }
-            .export-buttons { flex-direction: column; }
-            .export-btn { width: 100%; justify-content: center; }
-            .history-exports { flex-direction: column; }
-            .history-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -488,7 +327,6 @@
                 <table>
                     <tr><th>Adresse IP</th>             <td>{{ ip_address|default:"Non résolu" }}</td></tr>
                     <tr><th>Domaine</th>                <td>{{ domain_info.domain_name }}</td></tr>
-                    <tr><th>Pays (TLD)</th>             <td><strong>{{ country_flag }} {{ country_from_tld }}</strong></td></tr>
                     <tr><th>Registrar</th>               <td>{{ domain_info.registrar }}</td></tr>
                     <tr><th>Date de création</th>        <td>{{ domain_info.creation_date }}</td></tr>
                     <tr><th>Expiration</th>              <td>{{ domain_info.expiration_date }}</td></tr>
@@ -503,67 +341,6 @@
                     <summary><i class="fas fa-code"></i> Voir les données WHOIS brutes</summary>
                     <pre>{{ raw_whois }}</pre>
                 </details>
-
-                <!-- Section d'exportation -->
-                <div class="export-section">
-                    <h3><i class="fas fa-download"></i> Exporter les résultats</h3>
-                    <div class="export-buttons">
-                        <a href="{% url 'export_word' %}" class="export-btn export-word" title="Exporter en format Word">
-                            <i class="fas fa-file-word"></i> Exporter en Word
-                        </a>
-                        <a href="{% url 'export_excel' %}" class="export-btn export-excel" title="Exporter en format Excel">
-                            <i class="fas fa-file-excel"></i> Exporter en Excel
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        <!-- Section d'historique -->
-        {% if all_results %}
-            <div class="history-section">
-                <h3><i class="fas fa-history"></i> Historique des Recherches ({{ all_results.count }} domaine{{ all_results.count|pluralize }})</h3>
-                
-                <!-- Boutons d'export groupé -->
-                <div class="history-exports">
-                    <a href="{% url 'export_all_word' %}" class="history-btn history-btn-word" title="Exporter tous les résultats en Word">
-                        <i class="fas fa-file-word"></i> Exporter Tous en Word
-                    </a>
-                    <a href="{% url 'export_all_excel' %}" class="history-btn history-btn-excel" title="Exporter tous les résultats en Excel">
-                        <i class="fas fa-file-excel"></i> Exporter Tous en Excel
-                    </a>
-                </div>
-
-                <!-- Tableau d'historique -->
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-globe"></i> Domaine</th>
-                            <th><i class="fas fa-flag"></i> Pays (TLD)</th>
-                            <th><i class="fas fa-network-wired"></i> Adresse IP</th>
-                            <th><i class="fas fa-building"></i> Registraire</th>
-                            <th><i class="fas fa-clock"></i> Dernière Mise à Jour</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for result in all_results %}
-                            <tr>
-                                <td><strong>{{ result.domain }}</strong></td>
-                                <td><strong>{{ result.country_from_tld }}</strong></td>
-                                <td>{{ result.ip_address|default:"N/A" }}</td>
-                                <td>{{ result.domain_info.registrar|default:"N/A" }}</td>
-                                <td>{{ result.updated_at|date:"d/m/Y H:i:s" }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="history-section">
-                <h3><i class="fas fa-history"></i> Historique des Recherches</h3>
-                <div class="history-empty">
-                    <i class="fas fa-inbox"></i> Aucune recherche effectuée. Commencez par analyser un domaine.
-                </div>
             </div>
         {% endif %}
     </div>

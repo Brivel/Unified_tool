@@ -1,0 +1,10 @@
+tondomaine.com {          # ← CHANGE par ton vrai domaine (ou laisse vide pour tester avec IP)
+    reverse_proxy web:8000
+
+    file_server /static/* {
+        root /staticfiles
+    }
+    file_server /media/* {
+        root /media
+    }
+}

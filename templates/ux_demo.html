@@ -1,0 +1,218 @@
+{% extends "base_advanced.html" %}
+
+{% block title %}PROTEGIO - UX Demo{% endblock %}
+
+{% block breadcrumb %}
+<a class="breadcrumb-item" href="/"><i class="fa-solid fa-house"></i> Accueil</a>
+<span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+<span class="breadcrumb-item active">✨ UX Demo</span>
+{% endblock %}
+
+{% block content %}
+<style>
+    .demo-section {
+        margin: 40px 0;
+    }
+
+    .demo-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .demo-card {
+        padding: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        cursor: pointer;
+    }
+
+    .demo-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(88, 166, 255, 0.15);
+        border-color: var(--accent-primary);
+    }
+
+    .demo-card i {
+        font-size: 32px;
+        color: var(--accent-primary);
+        margin-bottom: 10px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .feature-item {
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(88, 166, 255, 0.05) 100%);
+        border: 1px solid rgba(88, 166, 255, 0.2);
+        border-radius: 12px;
+    }
+
+    .feature-item h5 {
+        color: var(--accent-primary);
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 30px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--accent-primary);
+    }
+
+    .animation-demo {
+        padding: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .bounce {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .fade-in {
+        animation: fadeIn 2s infinite;
+    }
+
+    @keyframes fadeIn {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+
+    .slide {
+        animation: slide 2s infinite;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-20px); }
+        50% { transform: translateX(20px); }
+        100% { transform: translateX(-20px); }
+    }
+</style>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-palette"></i> Thèmes de Couleur</div>
+    <p class="text-muted">Cliquez sur les boutons de thème en haut à droite pour basculer entre les 4 variantes de dark mode.</p>
+    <div class="feature-grid">
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-circle" style="color: #e0e4ff;"></i> Midnight</h5>
+            <p class="text-muted">Violet profond avec accents bleus - Parfait pour les sessions longues</p>
+        </div>
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-circle" style="color: #c9d1d9;"></i> Charcoal</h5>
+            <p class="text-muted">Gris neutre par défaut - Classique et professionnel</p>
+        </div>
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-circle" style="color: #d4d8e1;"></i> Slate</h5>
+            <p class="text-muted">Bleu-gris subtil - Équilibré pour le confort visuel</p>
+        </div>
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-circle" style="color: #cdd9e5;"></i> Onyx</h5>
+            <p class="text-muted">Noir profond minimaliste - OLED optimisé</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-breadcrumb"></i> Navigation par Breadcrumb</div>
+    <p class="text-muted">Voici un exemple de breadcrumb navigation - visibles en haut de cette page</p>
+    <div class="animation-demo">
+        <code>Accueil > Intégrations > Nuclei Scanner > Détails</code>
+    </div>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-bars"></i> Sidebar Navigation Collapsible</div>
+    <p class="text-muted">Cliquez sur l'icône hamburger en haut à gauche pour réduire la barre latérale. Elle est optimisée pour mobile !</p>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-sparkles"></i> Animations & Transitions</div>
+    <div class="demo-cards">
+        <div class="animation-demo bounce">
+            <i class="fa-solid fa-arrow-up"></i>
+            <p>Bounce Animation</p>
+        </div>
+        <div class="animation-demo fade-in">
+            <i class="fa-solid fa-star"></i>
+            <p>Fade In/Out</p>
+        </div>
+        <div class="animation-demo slide">
+            <i class="fa-solid fa-arrows-left-right"></i>
+            <p>Slide Animation</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-mobile"></i> Design Responsive (Mobile-First)</div>
+    <p class="text-muted">Redimensionnez votre fenêtre pour voir comment l'interface s'adapte à tous les appareils !</p>
+    <div class="feature-grid">
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-mobile"></i> Téléphones</h5>
+            <p class="text-muted">Sidebar qui se transforme en menu supérieur, grilles 1 colonne</p>
+        </div>
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-tablet"></i> Tablettes</h5>
+            <p class="text-muted">2 colonnes, sidebar toujours visible, navigation optimisée</p>
+        </div>
+        <div class="feature-item">
+            <h5><i class="fa-solid fa-desktop"></i> Desktop</h5>
+            <p class="text-muted">3-4 colonnes, sidebar fixe, expérience complète</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-terminal"></i> Terminal Mode CLI</div>
+    <p class="text-muted">Cliquez sur l'icône terminal en haut à droite pour ouvrir un pseudo-terminal. Essayez les commandes :</p>
+    <div class="feature-grid">
+        <div class="feature-item">
+            <h5><code>help</code></h5>
+            <p class="text-muted">Affiche les commandes disponibles</p>
+        </div>
+        <div class="feature-item">
+            <h5><code>status</code></h5>
+            <p class="text-muted">Affiche l'état du système PROTEGIO</p>
+        </div>
+        <div class="feature-item">
+            <h5><code>scan &lt;target&gt;</code></h5>
+            <p class="text-muted">Lance un scan sur une cible</p>
+        </div>
+        <div class="feature-item">
+            <h5><code>clear</code></h5>
+            <p class="text-muted">Nettoie l'écran du terminal</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <div class="section-title"><i class="fa-solid fa-check"></i> Fonctionnalités Implémentées</div>
+    <ul>
+        <li><strong>✅ 4 Thèmes Dark Mode :</strong> Midnight, Charcoal, Slate, Onyx (avec sauvegarde locale)</li>
+        <li><strong>✅ Navigation Breadcrumb :</strong> Affichage du chemin de navigation complet</li>
+        <li><strong>✅ Sidebar Navigation :</strong> Menu collapsible responsive</li>
+        <li><strong>✅ Animations CSS :</strong> Hover sur cards, transitions fluides</li>
+        <li><strong>✅ Design Mobile-First :</strong> Responsive sur tous les écrans (576px - desktop)</li>
+        <li><strong>✅ Terminal Mode :</strong> Pseudo-terminal avec commandes interactives</li>
+        <li><strong>✅ Persistance :</strong> Sauvegarde du thème dans localStorage</li>
+    </ul>
+</div>
+
+{% endblock %}

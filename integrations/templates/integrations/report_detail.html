@@ -1,0 +1,118 @@
+{% extends "integrations/base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{% url 'integrations:reports' %}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <h1 class="mt-3"><i class="fa-solid fa-file-pdf"></i> Rapport d'Audit Complet</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><h5>Target</h5></div>
+            <div class="card-body">
+                <h3><code>{{ report.target }}</code></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><h5>Niveau de Risque</h5></div>
+            <div class="card-body text-center">
+                {% if report.risk_level == 'critical' %}
+                <h3 style="color: #f26161;">CRITIQUE</h3>
+                {% elif report.risk_level == 'high' %}
+                <h3 style="color: #f0883e;">ÉLEVÉ</h3>
+                {% elif report.risk_level == 'medium' %}
+                <h3 style="color: #f39c12;">MOYEN</h3>
+                {% else %}
+                <h3 style="color: #f1c40f;">BAS</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><h5>Total Vulnérabilités</h5></div>
+            <div class="card-body text-center">
+                <h3 style="color: #f26161;">{{ report.total_vulnerabilities }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if result.nuclei_scan %}
+<div class="card mb-4">
+    <div class="card-header"><h5><i class="fa-solid fa-virus"></i> Scan Nuclei</h5></div>
+    <div class="card-body">
+        <p><strong>Target:</strong> {{ result.nuclei_scan.target }}</p>
+        <p><strong>Status:</strong> {{ result.nuclei_scan.get_status_display }}</p>
+        <p><strong>Vulnérabilités trouvées:</strong> {{ result.nuclei_scan.total_vulnerabilities }}</p>
+        <div class="row">
+            <div class="col">
+                <span class="badge badge-critical">Critical: {{ result.nuclei_scan.critical_count }}</span>
+                <span class="badge badge-high">High: {{ result.nuclei_scan.high_count }}</span>
+                <span class="badge badge-medium">Medium: {{ result.nuclei_scan.medium_count }}</span>
+                <span class="badge badge-low">Low: {{ result.nuclei_scan.low_count }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if result.port_scan %}
+<div class="card mb-4">
+    <div class="card-header"><h5><i class="fa-solid fa-sitemap"></i> Scan Port</h5></div>
+    <div class="card-body">
+        <p><strong>Target:</strong> {{ result.port_scan.target }}</p>
+        <p><strong>OS Détecté:</strong> {{ result.port_scan.os_detection }}</p>
+        <p><strong>Ports Ouverts:</strong> {{ result.port_scan.open_ports_count }}</p>
+        <p><strong>Ports Fermés:</strong> {{ result.port_scan.closed_ports_count }}</p>
+        <p><strong>Ports Filtrés:</strong> {{ result.port_scan.filtered_ports_count }}</p>
+    </div>
+</div>
+{% endif %}
+
+{% if result.ssl_scan %}
+<div class="card mb-4">
+    <div class="card-header"><h5><i class="fa-solid fa-lock"></i> Vérification SSL/TLS</h5></div>
+    <div class="card-body">
+        <p><strong>Target:</strong> {{ result.ssl_scan.target }}:{{ result.ssl_scan.port }}</p>
+        <p><strong>Validité Certificat:</strong> 
+            {% if result.ssl_scan.cert_valid %}
+            <span class="badge bg-success">Valide</span>
+            {% else %}
+            <span class="badge bg-danger">Invalide</span>
+            {% endif %}
+        </p>
+        <p><strong>Rating SSL:</strong> 
+            <span class="badge" style="background-color: {% if result.ssl_scan.ssl_rating == 'A+' %}#2ecc71{% elif result.ssl_scan.ssl_rating == 'A' %}#27ae60{% elif result.ssl_scan.ssl_rating == 'B' %}#f39c12{% elif result.ssl_scan.ssl_rating == 'C' %}#e67e22{% elif result.ssl_scan.ssl_rating == 'F' %}#f26161{% endif %}">
+                {{ result.ssl_scan.ssl_rating }}
+            </span>
+        </p>
+        <p><strong>Versions TLS:</strong> 
+            {% for version in result.ssl_scan.tls_versions %}
+            <span class="badge bg-info">{{ version }}</span>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header"><h5>Résumé du Rapport</h5></div>
+    <div class="card-body">
+        <p class="text-muted">Rapport généré le {{ report.created_at|date:"d/m/Y à H:i:s" }}</p>
+        <hr>
+        <p><strong>Recommandations:</strong></p>
+        <ul>
+            <li>Corriger immédiatement les vulnérabilités critiques</li>
+            <li>Implémenter les corrections de sécurité suggérées</li>
+            <li>Tester à nouveau après les corrections</li>
+            <li>Documenter tous les changements effectués</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

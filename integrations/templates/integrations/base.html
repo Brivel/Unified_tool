@@ -1,0 +1,35 @@
+{% extends "base_advanced.html" %}
+
+{% block title %}PROTEGIO - Intégrations{% endblock %}
+
+{% block breadcrumb %}
+<a class="breadcrumb-item" href="/"><i class="fa-solid fa-house"></i> Accueil</a>
+<span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+{% if 'nuclei' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-virus"></i> Nuclei</span>
+{% elif 'ports' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-sitemap"></i> Port Scanner</span>
+{% elif 'ssl' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-lock"></i> SSL/TLS</span>
+{% elif 'api-security' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-shield"></i> API Security</span>
+{% elif 'cve' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-flask-vial"></i> CVE Lookup</span>
+{% elif 'reports' in request.path %}
+    <a class="breadcrumb-item" href="/integrations/">Intégrations</a>
+    <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+    <span class="breadcrumb-item active"><i class="fa-solid fa-file-pdf"></i> Rapports</span>
+{% else %}
+    <span class="breadcrumb-item active"><i class="fa-solid fa-network-wired"></i> Intégrations</span>
+{% endif %}
+{% endblock %}

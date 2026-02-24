@@ -7,14 +7,23 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
     <style>
         :root {
-            --bg-main: #0d1117;
-            --bg-card: #161b22;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --border: #30363d;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #0066ff;
+            --accent-dark: #0052cc;
+            --accent-light: #e0edff;
+            --green: #10b981;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 
             /* Couleurs par catégorie */
             --recon-passive: #58a6ff;     /* Bleu clair - reconnaissance passive */
@@ -29,10 +38,11 @@
         }
 
         body {
-            background: var(--bg-main);
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container-wide {
@@ -45,6 +55,7 @@
             padding: 6rem 0 4rem;
             text-align: center;
             position: relative;
+            animation: slideInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .header h1 {
@@ -52,9 +63,21 @@
             font-weight: 900;
             background: var(--gradient-blue);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-            letter-spacing: -1.5px;
+            margin-bottom: 0.6rem;
+            letter-spacing: -1px;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header .subtitle {
@@ -62,38 +85,12 @@
             color: var(--text-muted);
             max-width: 780px;
             margin: 0 auto;
+            animation: slideInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
         }
 
-        .btn-performet {
-            position: absolute;
-            top: 2rem;
-            right: 1.5rem;
-            background: linear-gradient(135deg, #a371f7 0%, #8957e5 100%);
-            color: white;
-            border: 1px solid rgba(163, 113, 247, 0.3);
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .btn-performet:hover {
-            background: linear-gradient(135deg, #8957e5 0%, #7748d1 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(163, 113, 247, 0.3);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .btn-performet {
-                position: static;
-                margin-top: 1rem;
-            }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Category Header */
@@ -141,6 +138,19 @@
             overflow: hidden;
             transition: all 0.3s ease;
             height: 100%;
+            position: relative;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        }
+
+        .tool-card:nth-child(1) { animation-delay: 0.1s; }
+        .tool-card:nth-child(2) { animation-delay: 0.2s; }
+        .tool-card:nth-child(3) { animation-delay: 0.3s; }
+        .tool-card:nth-child(4) { animation-delay: 0.4s; }
+        .tool-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .tool-card:hover {
@@ -154,9 +164,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             background: var(--card-bg-icon);
             color: var(--card-accent);
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover .card-icon-wrapper {
+            background: rgba(88,166,255,0.15);
+            transform: scale(1.1);
         }
 
         .card-body {
@@ -190,6 +206,11 @@
         .btn-tool:hover {
             background: var(--card-accent-dark);
             transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(88, 166, 255, 0.3);
+        }
+
+        .btn-tool:active {
+            transform: translateY(0);
         }
 
         .coming-soon {
@@ -230,6 +251,20 @@
             .tools-category { padding: 4rem 0; }
             .section-title { font-size: 2.2rem; }
         }
+
+        /* Animations globales */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -238,10 +273,6 @@
 
     <!-- ====================== HEADER ====================== -->
     <header class="header">
-        <a href="/perforNet/" class="btn-performet">
-            <i class="fa-solid fa-tachometer-alt"></i>
-            Speed Test
-        </a>
         <h1>PROTEGIO</h1>
         <p class="subtitle">Suite professionnelle de reconnaissance, scanning et exploitation contrôlée</p>
     </header>
@@ -260,7 +291,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col">
                 <div class="tool-card">
-                    <div class="card-icon-wrapper"><i class="fa-solid fa-server"></i></div>
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
                     <div class="card-body">
                         <h3 class="card-title">WHOIS & DNS Recon</h3>
                         <div class="card-stats">Utilisations : {{ stats.protegioTools_uses|default:0 }}</div>
@@ -284,20 +315,7 @@
                 </div>
             </div>
 
-            <div class="col">
-                <div class="tool-card">
-                    <div class="card-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
-                    <div class="card-body">
-                        <h3 class="card-title">DNS Tool</h3>
-                        <div class="card-stats">Utilisations : {{ stats.dns_tool_uses|default:0 }}</div>
-                        <a href="/dns_tool/" class="btn-tool w-100">
-                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
-                        </a>
-                    </div>
-                </div>
-            </div>
-         
-            </div>
+            <!-- Ajouter d'autres outils passifs ici -->
         </div>
     </section>
 
@@ -352,19 +370,7 @@
                 </div>
             </div>
 
-         
-            <div class="col">
-                <div class="tool-card">
-                    <div class="card-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
-                    <div class="card-body">
-                        <h3 class="card-title">Burp_suite</h3>
-                        <div class="card-stats">Utilisations : {{ stats.intruder_uses|default:0 }}</div>
-                        <a href="/intruder/" class="btn-tool w-100">
-                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
-                        </a>
-                    </div>
-                </div>
-            </div>    <!-- Ajouter d'autres scanners ici (Nmap, Nuclei, etc.) -->
+            <!-- Ajouter d'autres scanners ici (Nmap, Nuclei, etc.) -->
         </div>
     </section>
 
