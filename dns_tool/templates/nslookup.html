@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <!-- FORMULAIRE NSLOOKUP -->
+        <div class="cyber-card p-4 text-center">
+            <h2 class="cyber-title mb-3">NSLOOKUP – Analyse DNS Sécurité</h2>
+            <p class="text-secondary">
+                Détection d’anomalies • Comparaison DNS • Inspection complète
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.domain }}
+
+                <button class="btn btn-cyber btn-lg w-100 mt-4">
+                    ▶ Lancer l’analyse DNS
+                </button>
+            </form>
+        </div>
+
+        <!-- RESULTATS -->
+        {% if records %}
+        <hr class="my-5">
+        <h4 class="cyber-title mb-3">📡 Résultats : {{ domain }}</h4>
+
+        {% for type, output in records.items %}
+        <div class="cyber-card p-3 mb-4">
+            <h5 class="cyber-title">{{ type }} RECORD</h5>
+            <pre>{{ output }}</pre>
+        </div>
+        {% endfor %}
+
+        <!-- COMPARAISON MULTI-DNS -->
+        {% if comparison %}
+        <h4 class="cyber-title mt-5 mb-3">🌍 Comparaison Multi-DNS</h4>
+
+        {% for record, output in records.items %}
+        <div class="cyber-card p-3 mb-4">
+            <h5 class="cyber-title">{{ record }} RECORD</h5>
+            <pre>{{ output }}</pre>
+        </div> 
+        {% endfor %}
+        {% endif %}
+
+        <!-- ALERTES DE SECURITE -->
+        {% if anomalies %}
+        <div class="cyber-card p-4 border-start border-danger border-4">
+            <h5 class="text-danger">⚠ ALERTES DE SÉCURITÉ</h5>
+            <ul>
+                {% for anomaly in anomalies %}
+                    <li>{{ anomaly.message }} ({{ anomaly.record }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+

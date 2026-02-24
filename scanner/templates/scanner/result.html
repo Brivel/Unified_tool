@@ -39,7 +39,7 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
     }
 
     .page-title {
@@ -72,20 +72,24 @@
     }
 
     .risk-badge {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      padding: 0.6rem 1.2rem;
-      border-radius: 50px;
-      min-width: 140px;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      min-width: 160px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .risk-high    { background: var(--high); }
-    .risk-medium  { background: var(--medium); color: #ffffff; }
-    .risk-low     { background: var(--low); color: #ffffff; }
-    .risk-info    { background: var(--info); }
+    .risk-high    { background: linear-gradient(135deg, var(--high) 0%, #dc2626 100%); }
+    .risk-medium  { background: linear-gradient(135deg, var(--medium) 0%, #d97706 100%); color: #ffffff; }
+    .risk-low     { background: linear-gradient(135deg, var(--low) 0%, #ca8a04 100%); color: #ffffff; }
+    .risk-info    { background: linear-gradient(135deg, var(--info) 0%, #2563eb 100%); }
 
     .report-container {
       background: #f9fafb;
@@ -95,6 +99,24 @@
       overflow-y: auto;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
+    }
+
+    .report-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .report-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+
+    .report-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .report-container::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
 
     .alert-custom {
@@ -149,6 +171,26 @@
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
 
+    .stat-card {
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-card h6 {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
     a {
       color: var(--accent);
       text-decoration: none;
@@ -165,12 +207,10 @@
 </head>
 <body>
 
-  <div class="scan-pulse"></div>
-
   <div class="container mt-5 pt-4">
     <h1 class="text-center mb-5 page-title">
       <i class="fas fa-chart-pie me-3"></i>
-      Résultats du Scan — {{ target }}
+      Résultats de l'analyse
     </h1>
 
     {% if error %}
@@ -183,91 +223,173 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
+      <div class="text-center">
+        <a href="{% url 'scanner:home' %}" class="btn btn-secondary btn-lg px-5 py-3">
+          <i class="fas fa-arrow-left me-2"></i>
+          Retour au formulaire
+        </a>
+      </div>
+
     {% elif success %}
+      <!-- Alert de succès -->
       <div class="alert alert-success alert-dismissible fade show alert-custom shadow-lg d-flex align-items-center mb-4" role="alert">
         <i class="fas fa-check-circle alert-icon text-success"></i>
         <div>
-          <strong>Scan terminé avec succès</strong><br/>
-          Durée : {{ scan_duration|default:"inconnue" }} • {{ alert_count }} alerte(s) au total
+          <strong>✓ Scan terminé avec succès!</strong><br/>
+          <small>Durée: <strong>{{ scan_duration }} secondes</strong> • {{ alert_count|default:0 }} alerte(s) détectée(s)</small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
-      <!-- Résumé des risques -->
-      <div class="card card-report shadow-xl mb-5">
-        <div class="card-header d-flex align-items-center">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          Résumé des Risques
+      <!-- Informations du scan -->
+      <div class="card card-report shadow-lg mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-info-circle me-2 text-primary"></i>
+            Informations du Scan
+          </h5>
         </div>
         <div class="card-body">
-          <div class="row text-center g-4">
-            <div class="col-md-3 col-6">
-              <div class="risk-badge risk-high">
-                <i class="fas fa-bomb me-2"></i>High<br>{{ high_count|default:0 }}
-              </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p><strong>🎯 Cible:</strong> <code>{{ target }}</code></p>
+              <p><strong>📋 Type:</strong> {{ scan_type|upper }}</p>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="risk-badge risk-medium">
-                <i class="fas fa-exclamation-triangle me-2"></i>Medium<br>{{ medium_count|default:0 }}
-              </div>
+            <div class="col-md-6">
+              <p><strong>🕐 Durée:</strong> {{ scan_duration }} secondes</p>
+              <p><strong>📡 URLs scannées:</strong> {{ urls_scanned }}</p>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="risk-badge risk-low">
-                <i class="fas fa-exclamation-circle me-2"></i>Low<br>{{ low_count|default:0 }}
-              </div>
-            </div>
-            <div class="col-md-3 col-6">
-              <div class="risk-badge risk-info">
-                <i class="fas fa-info-circle me-2"></i>Info<br>{{ info_count|default:0 }}
-              </div>
-            </div>
-          </div>
-
-          <hr class="my-4 bg-white opacity-25">
-
-          <div class="row text-center small text-white-75">
-            <div class="col-md-4">Type de scan : <strong>{{ scan_type|default:"Mixte" }}</strong></div>
-            <div class="col-md-4">URLs scannées : <strong>{{ urls_scanned|default:"?" }}</strong></div>
-            <div class="col-md-4">Date : <strong>{{ now|date:"d/m/Y H:i" }}</strong></div>
           </div>
         </div>
       </div>
 
-      <!-- Rapport HTML détaillé -->
-      <div class="card card-report shadow-xl">
-        <div class="card-header d-flex align-items-center">
-          <i class="fas fa-file-alt me-2"></i>
-          Rapport détaillé OWASP ZAP
+      <!-- Résumé des risques -->
+      <div class="card card-report shadow-lg mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+            Résumé des Risques
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-lg-3 col-md-6">
+              <div class="risk-badge risk-high">
+                <i class="fas fa-bomb"></i>
+                <div>
+                  <div style="font-size: 1.5rem;">{{ high_count|default:0 }}</div>
+                  <div style="font-size: 0.8rem;">ÉLEVÉ</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="risk-badge risk-medium">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                  <div style="font-size: 1.5rem;">{{ medium_count|default:0 }}</div>
+                  <div style="font-size: 0.8rem;">MOYEN</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="risk-badge risk-low">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                  <div style="font-size: 1.5rem;">{{ low_count|default:0 }}</div>
+                  <div style="font-size: 0.8rem;">FAIBLE</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="risk-badge risk-info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                  <div style="font-size: 1.5rem;">{{ info_count|default:0 }}</div>
+                  <div style="font-size: 0.8rem;">INFO</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-3">
+
+          <div class="row text-center small">
+            <div class="col-md-4">
+              <p class="mb-0"><strong>Total:</strong></p>
+              <p class="text-primary" style="font-size: 1.3rem;">{{ alert_count|default:0 }} alerte(s)</p>
+            </div>
+            <div class="col-md-4">
+              <p class="mb-0"><strong>Sévérité Maximale:</strong></p>
+              <p class="mb-0">
+                {% if high_count > 0 %}
+                  <span class="badge bg-danger" style="font-size: 0.85rem;">ÉLEVÉE</span>
+                {% elif medium_count > 0 %}
+                  <span class="badge bg-warning" style="font-size: 0.85rem;">MOYENNE</span>
+                {% elif low_count > 0 %}
+                  <span class="badge bg-info" style="font-size: 0.85rem;">FAIBLE</span>
+                {% else %}
+                  <span class="badge bg-success" style="font-size: 0.85rem;">OK</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-4">
+              <p class="mb-0"><strong>Date du Scan:</strong></p>
+              <p class="text-muted">{{ now|date:"d/m/Y H:i:s" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rapport détaillé OWASP ZAP -->
+      <div class="card card-report shadow-lg mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-file-alt me-2 text-info"></i>
+            Rapport Détaillé OWASP ZAP
+          </h5>
         </div>
         <div class="card-body p-0">
           <div class="report-container">
-            {{ html_report|safe }}
+            {% if html_report %}
+              {{ html_report|safe }}
+            {% else %}
+              <div class="text-center p-4 text-muted">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>Aucun rapport détaillé disponible</p>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
 
-      <div class="d-grid gap-3 d-md-flex justify-content-md-center mt-5">
-        <a href="/{{ report_path }}" class="btn btn-primary btn-lg px-5 py-3" download>
+      <!-- Actions -->
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-5">
+        {% if report_path %}
+        <a href="/{{ report_path }}" class="btn btn-primary btn-lg px-5" download>
           <i class="fas fa-download me-2"></i>
-          Télécharger le rapport complet (HTML)
+          Télécharger le rapport
         </a>
-        <a href="{% url 'home' %}" class="btn btn-secondary btn-lg px-5 py-3">
-          <i class="fas fa-arrow-left me-2"></i>
-          Nouvelle analyse
+        {% endif %}
+        <a href="{% url 'scanner:home' %}" class="btn btn-secondary btn-lg px-5">
+          <i class="fas fa-redo me-2"></i>
+          Nouveau scan
         </a>
       </div>
+
     {% endif %}
 
-    <div class="text-center mt-5 small text-white-75">
+    <!-- Footer -->
+    <div class="text-center mt-5 mb-4 small text-muted">
       <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/OWASP_ZAP_logo.svg" alt="OWASP ZAP" class="logo-zap-small me-2">
-      OWASP ZAP Scanner • Utilisation locale & sécurisée • {{ now|date:"d/m/Y H:i" }} •
-      <a href="https://www.zaproxy.org/" class="text-decoration-none">zaproxy.org</a>
+      <br/>
+      OWASP ZAP Scanner • Analyse de sécurité web • {{ now|date:"d/m/Y H:i" }} •
+      <a href="https://www.zaproxy.org/" target="_blank" class="text-decoration-none">zaproxy.org</a>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
+    // Animation des alertes
     document.querySelectorAll('.alert').forEach(el => {
       setTimeout(() => el.classList.add('show'), 150);
     });

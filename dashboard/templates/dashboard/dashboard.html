@@ -44,6 +44,7 @@
         .header {
             padding: 6rem 0 4rem;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -61,6 +62,38 @@
             color: var(--text-muted);
             max-width: 780px;
             margin: 0 auto;
+        }
+
+        .btn-performet {
+            position: absolute;
+            top: 2rem;
+            right: 1.5rem;
+            background: linear-gradient(135deg, #a371f7 0%, #8957e5 100%);
+            color: white;
+            border: 1px solid rgba(163, 113, 247, 0.3);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-performet:hover {
+            background: linear-gradient(135deg, #8957e5 0%, #7748d1 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(163, 113, 247, 0.3);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .btn-performet {
+                position: static;
+                margin-top: 1rem;
+            }
         }
 
         /* Category Header */
@@ -205,6 +238,10 @@
 
     <!-- ====================== HEADER ====================== -->
     <header class="header">
+        <a href="/perforNet/" class="btn-performet">
+            <i class="fa-solid fa-tachometer-alt"></i>
+            Speed Test
+        </a>
         <h1>PROTEGIO</h1>
         <p class="subtitle">Suite professionnelle de reconnaissance, scanning et exploitation contrôlée</p>
     </header>
@@ -223,7 +260,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col">
                 <div class="tool-card">
-                    <div class="card-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-server"></i></div>
                     <div class="card-body">
                         <h3 class="card-title">WHOIS & DNS Recon</h3>
                         <div class="card-stats">Utilisations : {{ stats.protegioTools_uses|default:0 }}</div>
@@ -247,7 +284,20 @@
                 </div>
             </div>
 
-            <!-- Ajouter d'autres outils passifs ici -->
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">DNS Tool</h3>
+                        <div class="card-stats">Utilisations : {{ stats.dns_tool_uses|default:0 }}</div>
+                        <a href="/dns_tool/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>
+         
+            </div>
         </div>
     </section>
 

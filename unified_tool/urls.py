@@ -28,6 +28,8 @@ urlpatterns = [
     path('checker/', include('checker.urls')),
     path('scanner/', include('scanner.urls')),
     path('intruder/', include('intruder.urls')),
+    path('dns_tool/', include('dns_tool.urls')),
+    path('perforNet/', include('perforNet.urls')),
 ]
 # Servir les fichiers statiques en développement uniquement
 if settings.DEBUG:

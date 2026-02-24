@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <title>OWASP ZAP Security Report (Mock)</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h1 { color: #333; }
+                h2 { color: #666; border-bottom: 2px solid #666; padding-bottom: 10px; }
+                .summary { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                .risk-high { color: #d00; }
+                .risk-medium { color: #d80; }
+                .risk-low { color: #dd0; }
+                .risk-informational { color: #08d; }
+                .high { color: #ff0000; font-weight: bold; }
+                .medium { color: #ff9900; font-weight: bold; }
+                .low { color: #ffff00; font-weight: bold; }
+                .info { color: #0099ff; font-weight: bold; }
+                .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+                .stat-box { padding: 15px; border-radius: 5px; text-align: center; }
+                .stat-high { background: #ffcccc; }
+                .stat-medium { background: #ffe6cc; }
+                .stat-low { background: #ffffcc; }
+                .stat-info { background: #ccf2ff; }
+            </style>
+        </head>
+        <body>
+            <h1>OWASP ZAP Security Assessment Report</h1>
+            
+            <div class="summary">
+                <h2>Summary</h2>
+                <p><strong>Target URL:</strong> https://google.com</p>
+                <p><strong>Scan Date:</strong> 2026-02-24 03:08:56</p>
+                <p><strong>Report Type:</strong> Mock Report (Development Mode)</p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box stat-high">
+                    <h3 class="high">2</h3>
+                    <p>High Risk Issues</p>
+                </div>
+                <div class="stat-box stat-medium">
+                    <h3 class="medium">3</h3>
+                    <p>Medium Risk Issues</p>
+                </div>
+                <div class="stat-box stat-low">
+                    <h3 class="low">5</h3>
+                    <p>Low Risk Issues</p>
+                </div>
+                <div class="stat-box stat-info">
+                    <h3 class="info">3</h3>
+                    <p>Informational</p>
+                </div>
+            </div>
+            
+            <h2>Alerts Details</h2>
+            
+            <div class="risk-high" style="border-left: 4px solid #ff0000; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>SQL Injection</h4>
+                <p><strong>Risk:</strong> High</p>
+                <p><strong>Confidence:</strong> High</p>
+                <p><strong>Description:</strong> Potential SQL injection vulnerability detected</p>
+                <p><strong>URL:</strong> https://google.com/search?q=test0</p>
+            </div>
+            
+            <div class="risk-high" style="border-left: 4px solid #ff0000; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>SQL Injection</h4>
+                <p><strong>Risk:</strong> High</p>
+                <p><strong>Confidence:</strong> High</p>
+                <p><strong>Description:</strong> Potential SQL injection vulnerability detected</p>
+                <p><strong>URL:</strong> https://google.com/search?q=test1</p>
+            </div>
+            
+            <div class="risk-medium" style="border-left: 4px solid #ff9900; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Cross Site Scripting</h4>
+                <p><strong>Risk:</strong> Medium</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Potential XSS vulnerability detected</p>
+                <p><strong>URL:</strong> https://google.com/profile?id=test0</p>
+            </div>
+            
+            <div class="risk-medium" style="border-left: 4px solid #ff9900; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Cross Site Scripting</h4>
+                <p><strong>Risk:</strong> Medium</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Potential XSS vulnerability detected</p>
+                <p><strong>URL:</strong> https://google.com/profile?id=test1</p>
+            </div>
+            
+            <div class="risk-medium" style="border-left: 4px solid #ff9900; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Cross Site Scripting</h4>
+                <p><strong>Risk:</strong> Medium</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Potential XSS vulnerability detected</p>
+                <p><strong>URL:</strong> https://google.com/profile?id=test2</p>
+            </div>
+            
+            <div class="risk-low" style="border-left: 4px solid #ffff00; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Insecure HTTP Method</h4>
+                <p><strong>Risk:</strong> Low</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Insecure HTTP method allowed</p>
+                <p><strong>URL:</strong> https://google.com/admin0</p>
+            </div>
+            
+            <div class="risk-low" style="border-left: 4px solid #ffff00; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Insecure HTTP Method</h4>
+                <p><strong>Risk:</strong> Low</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Insecure HTTP method allowed</p>
+                <p><strong>URL:</strong> https://google.com/admin1</p>
+            </div>
+            
+            <div class="risk-low" style="border-left: 4px solid #ffff00; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Insecure HTTP Method</h4>
+                <p><strong>Risk:</strong> Low</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Insecure HTTP method allowed</p>
+                <p><strong>URL:</strong> https://google.com/admin2</p>
+            </div>
+            
+            <div class="risk-low" style="border-left: 4px solid #ffff00; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Insecure HTTP Method</h4>
+                <p><strong>Risk:</strong> Low</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Insecure HTTP method allowed</p>
+                <p><strong>URL:</strong> https://google.com/admin3</p>
+            </div>
+            
+            <div class="risk-low" style="border-left: 4px solid #ffff00; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Insecure HTTP Method</h4>
+                <p><strong>Risk:</strong> Low</p>
+                <p><strong>Confidence:</strong> Medium</p>
+                <p><strong>Description:</strong> Insecure HTTP method allowed</p>
+                <p><strong>URL:</strong> https://google.com/admin4</p>
+            </div>
+            
+            <div class="risk-informational" style="border-left: 4px solid #0099ff; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Information Disclosure</h4>
+                <p><strong>Risk:</strong> Informational</p>
+                <p><strong>Confidence:</strong> Low</p>
+                <p><strong>Description:</strong> Information disclosure</p>
+                <p><strong>URL:</strong> https://google.com/info0</p>
+            </div>
+            
+            <div class="risk-informational" style="border-left: 4px solid #0099ff; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Information Disclosure</h4>
+                <p><strong>Risk:</strong> Informational</p>
+                <p><strong>Confidence:</strong> Low</p>
+                <p><strong>Description:</strong> Information disclosure</p>
+                <p><strong>URL:</strong> https://google.com/info1</p>
+            </div>
+            
+            <div class="risk-informational" style="border-left: 4px solid #0099ff; padding: 10px; margin: 5px 0; background: #f5f5f5;">
+                <h4>Information Disclosure</h4>
+                <p><strong>Risk:</strong> Informational</p>
+                <p><strong>Confidence:</strong> Low</p>
+                <p><strong>Description:</strong> Information disclosure</p>
+                <p><strong>URL:</strong> https://google.com/info2</p>
+            </div>
+            
+            
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; color: #999; font-size: 12px;">
+                <p>This is a mock report generated for development/testing purposes.</p>
+                <p>For production use, install and configure OWASP ZAP daemon on port 8080.</p>
+            </div>
+        </body>
+        </html>
