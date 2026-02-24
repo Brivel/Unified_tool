@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PROTEGIO — Full-Scope-Pentesting</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        :root {
+            --bg-main: #0d1117;
+            --bg-card: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --border: #30363d;
+
+            /* Couleurs par catégorie */
+            --recon-passive: #58a6ff;     /* Bleu clair - reconnaissance passive */
+            --recon-active: #f0883e;      /* Orange - reconnaissance active */
+            --scanning:    #3fb950;       /* Vert - scanning */
+            --exploitation:#f26161;       /* Rouge - exploitation */
+
+            --gradient-blue:   linear-gradient(135deg, #1e6feb 0%, #58a6ff 100%);
+            --gradient-orange: linear-gradient(135deg, #f0883e 0%, #ffab6b 100%);
+            --gradient-green:  linear-gradient(135deg, #2ea44f 0%, #3fb950 100%);
+            --gradient-red:    linear-gradient(135deg, #d73a49 0%, #f26161 100%);
+        }
+
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container-wide {
+            max-width: 1400px;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
+            font-weight: 900;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1.5px;
+        }
+
+        .header .subtitle {
+            font-size: 1.45rem;
+            color: var(--text-muted);
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .btn-performet {
+            position: absolute;
+            top: 2rem;
+            right: 1.5rem;
+            background: linear-gradient(135deg, #a371f7 0%, #8957e5 100%);
+            color: white;
+            border: 1px solid rgba(163, 113, 247, 0.3);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-performet:hover {
+            background: linear-gradient(135deg, #8957e5 0%, #7748d1 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(163, 113, 247, 0.3);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .btn-performet {
+                position: static;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Category Header */
+        .category-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.65rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 5px;
+            border-radius: 3px;
+        }
+
+        /* Cards */
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.45);
+            border-color: var(--card-accent);
+        }
+
+        .card-icon-wrapper {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            background: var(--card-bg-icon);
+            color: var(--card-accent);
+        }
+
+        .card-body {
+            padding: 1.8rem 1.6rem;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .card-stats {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.4rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .btn-tool {
+            background: var(--card-accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+
+        .btn-tool:hover {
+            background: var(--card-accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .coming-soon {
+            background: rgba(139,148,158,0.15);
+            color: var(--text-muted);
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        /* Catégories spécifiques */
+        .recon-passive .category-badge { background: rgba(88,166,255,0.15); color: var(--recon-passive); border-color: rgba(88,166,255,0.35); }
+        .recon-passive .section-title::after { background: var(--recon-passive); }
+        .recon-passive .tool-card { --card-accent: var(--recon-passive); --card-accent-dark: #388bfd; --card-bg-icon: rgba(88,166,255,0.08); }
+
+        .recon-active .category-badge   { background: rgba(240,136,62,0.15); color: var(--recon-active); border-color: rgba(240,136,62,0.35); }
+        .recon-active .section-title::after   { background: var(--recon-active); }
+        .recon-active .tool-card { --card-accent: var(--recon-active); --card-accent-dark: #e07b38; --card-bg-icon: rgba(240,136,62,0.08); }
+
+        .scanning .category-badge       { background: rgba(63,185,80,0.15); color: var(--scanning); border-color: rgba(63,185,80,0.35); }
+        .scanning .section-title::after       { background: var(--scanning); }
+        .scanning .tool-card { --card-accent: var(--scanning); --card-accent-dark: #2ea44f; --card-bg-icon: rgba(63,185,80,0.08); }
+
+        .exploitation .category-badge   { background: rgba(242,97,97,0.15); color: var(--exploitation); border-color: rgba(242,97,97,0.35); }
+        .exploitation .section-title::after   { background: var(--exploitation); }
+        .exploitation .tool-card { --card-accent: var(--exploitation); --card-accent-dark: #d73a49; --card-bg-icon: rgba(242,97,97,0.08); }
+
+        .tools-category {
+            padding: 5.5rem 0;
+        }
+
+        .tools-category:not(:first-of-type) {
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 992px) {
+            .header { padding: 5rem 0 3rem; }
+            .tools-category { padding: 4rem 0; }
+            .section-title { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-wide mx-auto">
+
+    <!-- ====================== HEADER ====================== -->
+    <header class="header">
+        <a href="/perforNet/" class="btn-performet">
+            <i class="fa-solid fa-tachometer-alt"></i>
+            Speed Test
+        </a>
+        <h1>PROTEGIO</h1>
+        <p class="subtitle">Suite professionnelle de reconnaissance, scanning et exploitation contrôlée</p>
+    </header>
+
+
+    <!-- ====================== 1. RECONNAISSANCE PASSIVE ====================== -->
+    <section class="tools-category recon-passive">
+        <div class="category-header">
+            <span class="category-badge">
+                <i class="fa-solid fa-eye-slash"></i>
+                RECONNAISSANCE PASSIVE
+            </span>
+            <h2 class="section-title">Aucune trace laissée</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-server"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">WHOIS & DNS Recon</h3>
+                        <div class="card-stats">Utilisations : {{ stats.protegioTools_uses|default:0 }}</div>
+                        <a href="/protegioTools/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-user-secret"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">Username / Email Check</h3>
+                        <div class="card-stats">Utilisations : {{ stats.checker_uses|default:47 }}</div>
+                        <a href="/checker/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">DNS Tool</h3>
+                        <div class="card-stats">Utilisations : {{ stats.dns_tool_uses|default:0 }}</div>
+                        <a href="/dns_tool/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>
+         
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ====================== 2. RECONNAISSANCE ACTIVE ====================== -->
+    <section class="tools-category recon-active">
+        <div class="category-header">
+            <span class="category-badge">
+                <i class="fa-solid fa-eye"></i>
+                RECONNAISSANCE ACTIVE
+            </span>
+            <h2 class="section-title">Interactions contrôlées</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">Subdomain Enumeration</h3>
+                        <p class="coming-soon mt-3">Bientôt disponible</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ajouter d'autres outils actifs ici -->
+        </div>
+    </section>
+
+
+    <!-- ====================== 3. SCANNING ====================== -->
+    <section class="tools-category scanning">
+        <div class="category-header">
+            <span class="category-badge">
+                <i class="fa-solid fa-satellite-dish"></i>
+                SCANNING
+            </span>
+            <h2 class="section-title">Découverte approfondie</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">OWASP ZAP Scanner</h3>
+                        <div class="card-stats">Utilisations : {{ stats.scanner_uses|default:0 }}</div>
+                        <a href="/scanner/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+         
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">Burp_suite</h3>
+                        <div class="card-stats">Utilisations : {{ stats.intruder_uses|default:0 }}</div>
+                        <a href="/intruder/" class="btn-tool w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i> Lancer
+                        </a>
+                    </div>
+                </div>
+            </div>    <!-- Ajouter d'autres scanners ici (Nmap, Nuclei, etc.) -->
+        </div>
+    </section>
+
+
+    <!-- ====================== 4. EXPLOITATION ====================== -->
+    <section class="tools-category exploitation">
+        <div class="category-header">
+            <span class="category-badge">
+                <i class="fa-solid fa-bug"></i>
+                EXPLOITATION
+            </span>
+            <h2 class="section-title">Phase offensive</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="tool-card">
+                    <div class="card-icon-wrapper"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <div class="card-body">
+                        <h3 class="card-title">Exploitation contrôlée</h3>
+                        <p class="coming-soon mt-3">En cours de développement</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ajouter d'autres outils d'exploitation ici -->
+        </div>
+    </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

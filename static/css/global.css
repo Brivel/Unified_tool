@@ -1,0 +1,164 @@
+/* =====================================================
+   PROTEGIO - Global Design System
+   ===================================================== */
+
+:root {
+    --primary: #0066ff;
+    --primary-dark: #0052cc;
+    --primary-light: #e0edff;
+    --bg: #f8fafc;
+    --bg-light: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* {
+    scroll-behavior: smooth;
+}
+
+/* ===================== TYPOGRAPHY ===================== */
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacOSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, #f0f4f8 100%);
+    color: var(--text);
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* ===================== ANIMATIONS ===================== */
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+/* ===================== COMPONENTS ===================== */
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, #0052cc 100%);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 102, 255, 0.3);
+    background: linear-gradient(135deg, #0052cc 0%, var(--primary) 100%);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.card {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.form-control, .form-select {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    transition: var(--transition);
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light), inset 0 2px 4px rgba(0, 102, 255, 0.05);
+    color: var(--text);
+    transform: translateY(-2px);
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+}
+
+/* ===================== UTILITIES ===================== */
+
+.fade-in { animation: fadeIn 0.6s ease-in; }
+.slide-up { animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.slide-down { animation: slideDown 0.4s ease; }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 8px;
+}
+
+/* Smooth transitions */
+a, button {
+    transition: var(--transition);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { padding: 0; }
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    
+    .card { border-radius: 12px; }
+}
