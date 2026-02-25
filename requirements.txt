@@ -1,0 +1,7 @@
+Django==6.0.1
+requests>=2.28.0
+python-whois>=0.8.0
+speedtest-cli>=1.0.7
+openpyxl>=3.10.0
+python-docx>=0.8.11
+dnspython>=2.3.0
