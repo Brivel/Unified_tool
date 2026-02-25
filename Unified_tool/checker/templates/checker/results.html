@@ -1,245 +1,33 @@
 {% extends "checker/base.html" %}
 {% block content %}
+<h4>Résultats</h4>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="text-center mb-5 results-header">
-                <h2 class="results-title">
-                    <i class="fas fa-magnifying-glass"></i> Résultats de recherche
-                </h2>
-                <p class="text-muted">
-                    Comptes trouvés <span class="found-count badge bg-success ms-2">{{ results|length }} comptes</span>
-                </p>
-            </div>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Site</th>
+            <th>Catégorie</th>
+            <th>Statut</th>
+            <th>Lien</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for r in results %}
+        <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.category }}</td>
+            <td>
+                {% if r.exists %}
+                    <span class="badge bg-success">EXISTE</span>
+                {% else %}
+                    <span class="badge bg-danger">ABSENT</span>
+                {% endif %}
+            </td>
+            <td><a href="{{ r.url }}" target="_blank">Voir</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-            <!-- Stats rapides -->
-            <div class="row mb-4 g-3">
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-value">{{ found_count|default:'0' }}</div>
-                        <div class="stat-label"><i class="fas fa-check-circle text-success me-2"></i>Trouvé</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-value">{{ not_found_count|default:'0' }}</div>
-                        <div class="stat-label"><i class="fas fa-times-circle text-secondary me-2"></i>Absent</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-value">{{ results|length }}</div>
-                        <div class="stat-label"><i class="fas fa-list me-2"></i>Total</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tableau des résultats -->
-            <div class="table-responsive card shadow-lg">
-                <table class="table table-hover mb-0">
-                    <thead class="table-header">
-                        <tr>
-                            <th scope="col"><i class="fas fa-globe me-2"></i>Site</th>
-                            <th scope="col"><i class="fas fa-tag me-2"></i>Catégorie</th>
-                            <th scope="col"><i class="fas fa-check-circle me-2"></i>Statut</th>
-                            <th scope="col"><i class="fas fa-link me-2"></i>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for r in results %}
-                        <tr class="{% if r.exists %}row-found{% else %}row-not-found{% endif %}" style="animation: slideInUp 0.4s ease-out backwards;">
-                            <td class="fw-semibold">
-                                <i class="fas fa-{% if r.exists %}circle-check text-success{% else %}circle-xmark text-secondary{% endif %} me-2"></i>{{ r.name }}
-                            </td>
-                            <td>
-                                <span class="badge bg-info">{{ r.category }}</span>
-                            </td>
-                            <td>
-                                {% if r.exists %}
-                                    <span class="badge bg-success pulse">
-                                        <i class="fas fa-check me-1"></i>TROUVÉ
-                                    </span>
-                                {% else %}
-                                    <span class="badge bg-secondary">
-                                        <i class="fas fa-times me-1"></i>ABSENT
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if r.exists %}
-                                    <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary btn-action">
-                                        <i class="fas fa-external-link-alt me-1"></i>Voir
-                                    </a>
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Boutons d'action -->
-            <div class="mt-4 text-center d-flex gap-3 justify-content-center flex-wrap actions-footer">
-                <a href="/" class="btn btn-primary btn-lg">
-                    <i class="fas fa-arrow-left me-2"></i>Nouvelle recherche
-                </a>
-                <button class="btn btn-outline-secondary btn-lg" onclick="window.print()">
-                    <i class="fas fa-print me-2"></i>Imprimer
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .results-header {
-        animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .results-title {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .found-count {
-        font-weight: 600;
-    }
-
-    .stat-card {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    }
-
-    .stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { animation-delay: 0.3s; }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0, 102, 255, 0.1);
-    }
-
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0066ff;
-        margin-bottom: 8px;
-    }
-
-    .stat-label {
-        color: var(--text-muted);
-        font-weight: 500;
-    }
-
-    @keyframes slideInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .table-header {
-        background: #f0f4f8;
-    }
-
-    .table-header th {
-        color: #0066ff;
-        font-weight: 600;
-        border: none;
-        padding: 14px;
-    }
-
-    .row-found {
-        background: #f0fdf4;
-        transition: background-color 0.2s ease;
-    }
-
-    .row-found:hover {
-        background: #e6f9f1;
-    }
-
-    .row-not-found {
-        opacity: 0.7;
-        transition: all 0.2s ease;
-    }
-
-    .row-not-found:hover {
-        background: #f8fafc;
-        opacity: 1;
-    }
-
-    .table td {
-        vertical-align: middle;
-        border-color: var(--border);
-        padding: 14px;
-    }
-
-    .badge {
-        font-weight: 500;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .badge.pulse {
-        animation: badgePulse 2s ease-in-out infinite;
-    }
-
-    @keyframes badgePulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.85; }
-    }
-
-    .btn-outline-primary {
-        border-color: #0066ff;
-        color: #0066ff;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-primary:hover {
-        background-color: #0066ff;
-        border-color: #0066ff;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .btn-action {
-        font-weight: 500;
-    }
-
-    .actions-footer {
-        animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
-    }
-
-    @media (max-width: 768px) {
-        .results-title { font-size: 1.8rem; }
-        .stat-value { font-size: 1.5rem; }
-        .table { font-size: 0.9rem; }
-    }
-
-    @media print {
-        .actions-footer, .btn-primary { display: none; }
-    }
-</style>
-
-<script>
-    // Ajouter des animations smooth aux lignes du tableau
-    document.addEventListener('DOMContentLoaded', () => {
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach((row, index) => {
-            row.style.animationDelay = `${index * 0.05}s`;
-        });
-    });
-</script>
-
+<a href="/" class="btn btn-secondary">Nouvelle recherche</a>
 {% endblock %}
