@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protegio WHOIS Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #e0e6ed;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Overlay glitch */
+        .glitch-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+
+        .glitch-overlay.active { opacity: 1; }
+
+        .glitch-scanlines {
+            background: repeating-linear-gradient(0deg, rgba(0,255,157,0.05), rgba(0,255,157,0.05) 1px, transparent 1px, transparent 2px);
+            animation: scanlines 0.1s linear infinite;
+        }
+
+        .glitch-rgb {
+            background: linear-gradient(90deg, rgba(255,0,0,0.1), rgba(0,255,157,0.1), rgba(0,0,255,0.1));
+            mix-blend-mode: screen;
+            animation: rgb-shift 0.15s infinite;
+        }
+
+        .glitch-shake { animation: shake 0.5s ease-in-out; }
+
+        @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(2px); } }
+        @keyframes rgb-shift { 0% { transform: translate(0,0); } 20% { transform: translate(-5px,-3px); } 40% { transform: translate(5px,3px); } 60% { transform: translate(-3px,5px); } 80% { transform: translate(3px,-5px); } 100% { transform: translate(0,0); } }
+        @keyframes shake { 0%,100% { transform: translate(0); } 10%,30%,50%,70%,90% { transform: translate(-5px,5px); } 20%,40%,60%,80% { transform: translate(5px,-5px); } }
+
+        /* Canvas Matrix */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+   
+}
+.animated-title {
+    font-size: 4.2rem; /* Un peu plus grand pour l'impact */
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 800; /* Très bold pour le style mecha */
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #00ff9d, #00bfff, #7b5eff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(0, 255, 157, 0.9);
+    animation: glow 3s ease-in-out infinite alternate, gradientMove 8s linear infinite;
+    opacity: 0;
+    letter-spacing: 4px; /* Espacement cyberpunk classique */
+}
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 255, 157, 0.6); }
+            to { text-shadow: 0 0 50px rgba(0, 255, 157, 1), 0 0 80px rgba(0, 191, 255, 0.6); }
+        }
+
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+        p.subtitle { font-size: 1.3rem; color: #a0e6c0; margin-bottom: 50px; opacity: 0; transform: translateY(20px); transition: all 1s ease-out; }
+
+        .form-container { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
+
+        form { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
+
+        input[type="text"] {
+            padding: 16px 24px;
+            width: 420px;
+            max-width: 100%;
+            border: 2px solid #00ff9d;
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ff9d;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+            transition: all 0.4s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.8);
+            transform: scale(1.05);
+            border-color: #00bfff;
+        }
+
+        .submit-btn {
+            position: relative;
+            padding: 16px 36px;
+            background: linear-gradient(90deg, #00bfff, #00ff9d);
+            color: black;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.6);
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.9);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
+
+        .results {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff9d;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.4);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+            backdrop-filter: blur(5px);
+        }
+
+        .results.show { opacity: 1; transform: translateY(0); }
+
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1.1rem; color: #00ff9d; }
+
+        th {
+            background: rgba(0, 191, 255, 0.2);
+            color: #00ff9d;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid #00ff9d;
+        }
+
+        td {
+            padding: 16px;
+            background: rgba(0, 30, 20, 0.3);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.3);
+            white-space: pre-wrap;
+        }
+
+        tr:hover td { background: rgba(0, 255, 157, 0.1); }
+
+        .error {
+            color: #ff3366;
+            font-size: 1.3rem;
+            background: rgba(255, 51, 102, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #ff3366;
+            margin: 20px 0;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s;
+        }
+
+        .error.show { opacity: 1; transform: scale(1); }
+
+        details { margin-top: 30px; text-align: left; }
+
+        summary {
+            cursor: pointer;
+            color: #00ff9d;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 12px;
+            background: rgba(0, 255, 157, 0.1);
+            border-radius: 10px;
+            border: 1px solid #00ff9d;
+            transition: all 0.3s;
+        }
+
+        summary:hover { background: rgba(0, 255, 157, 0.3); }
+
+        pre {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            color: #00ff9d;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 0.6s;
+            border: 1px solid #00ff9d;
+        }
+
+        details[open] pre { opacity: 1; }
+
+        footer {
+            margin-top: 100px;
+            color: #00ff9d;
+            font-size: 0.9rem;
+            z-index: 1;
+            text-shadow: 0 0 10px #00ff9d;
+        }
+
+        /* Bouton contrôle son */
+        #sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 157, 0.2);
+            border: 2px solid #00ff9d;
+            border-radius: 50%;
+            color: #00ff9d;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+            transition: all 0.3s;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sound-toggle:hover {
+            background: rgba(0, 255, 157, 0.4);
+            transform: scale(1.1);
+        }
+
+        #sound-toggle.muted {
+            color: #666;
+            border-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay glitch -->
+    <div class="glitch-overlay" id="glitch-overlay">
+        <div class="glitch-scanlines"></div>
+        <div class="glitch-rgb"></div>
+    </div>
+
+    <!-- Canvas Matrix -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Bouton contrôle son -->
+    <div id="sound-toggle" title="Activer le son cyberpunk">🔊</div>
+
+    <!-- Audio ambiance cyberpunk (boucle infinie) -->
+    <audio id="cyberpunk-ambiance" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/23/audio_4f2a2b5d5a.mp3?filename=cyberpunk-121967.mp3" type="audio/mpeg">
+        Votre navigateur ne supporte pas l'audio.
+    </audio>
+
+    <div class="container">
+        <h1 class="animated-title" id="main-title">Protegio WHOIS Tool</h1>
+        <p class="subtitle" id="subtitle">Outil de reconnaissance avancée pour l'analyse de domaines</p>
+
+        <div class="form-container" id="form-container">
+            <form method="post" id="whois-form">
+                {% csrf_token %}
+                <input type="text" name="domain" placeholder="Entrez un domaine (ex: google.com)" required value="{{ domain|default:'' }}">
+                <button type="submit" class="submit-btn" id="submit-btn">Analyser</button>
+            </form>
+        </div>
+
+        {% if error %}
+            <div class="error show">
+                <strong>Erreur :</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if domain_info %}
+            <div class="results show" id="results">
+                <h2 style="color: #00ff9d; margin-bottom: 20px; text-shadow: 0 0 20px #00ff9d;">
+                    Résultats WHOIS pour <strong>{{ domain }}</strong>
+                </h2>
+
+                <table>
+                    <tr><th>Adresse IP</th>             <td>{{ ip_address|default:"Non résolu" }}</td></tr>
+                    <tr><th>Domaine</th>                <td>{{ domain_info.domain_name }}</td></tr>
+                    <tr><th>Registrar</th>               <td>{{ domain_info.registrar }}</td></tr>
+                    <tr><th>Date de création</th>        <td>{{ domain_info.creation_date }}</td></tr>
+                    <tr><th>Expiration</th>              <td>{{ domain_info.expiration_date }}</td></tr>
+                    <tr><th>Dernière mise à jour</th>    <td>{{ domain_info.last_updated }}</td></tr>
+                    <tr><th>Serveurs de noms</th>       <td>{{ domain_info.name_servers|join:", " }}</td></tr>
+                    <tr><th>Statut</th>                  <td>{{ domain_info.status|join:"<br>" }}</td></tr>
+                    <tr><th>Pays</th>                    <td>{{ domain_info.country }}</td></tr>
+                    <tr><th>Organisation</th>           <td>{{ domain_info.org }}</td></tr>
+                </table>
+
+                <details>
+                    <summary>Voir les données WHOIS brutes</summary>
+                    <pre>{{ raw_whois }}</pre>
+                </details>
+            </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        Protegio Tools © 2026 - Outil de reconnaissance éthique
+    </footer>
+
+    <script>
+        // === ANIMATIONS DE BASE ===
+        window.addEventListener('load', () => {
+            document.querySelector('.animated-title').style.opacity = '1';
+            document.querySelector('.subtitle').style.opacity = '1';
+            document.querySelector('.subtitle').style.transform = 'translateY(0)';
+            document.querySelector('.form-container').style.opacity = '1';
+            document.querySelector('.form-container').style.transform = 'translateY(0)';
+        });
+
+        // Ripple bouton
+        const btn = document.getElementById('submit-btn');
+        btn.addEventListener('click', function(e) {
+            let ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            let x = e.clientX - e.target.offsetLeft;
+            let y = e.clientY - e.target.offsetTop;
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // Résultats
+        {% if domain_info or error %}
+            setTimeout(() => {
+                const results = document.getElementById('results');
+                if (results) results.classList.add('show');
+            }, 300);
+        {% endif %}
+
+        // === EFFET MATRIX ===
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const matrixChars = 'アカサタナハマヤラワガザダバパイキシチニヒミリギジヂビピウクステノフムユルグズドブプエケセテネヘメレゲゼデベペオコソトホモヨロゴゾドボポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff9d';
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                ctx.fillText(text, x, y);
+
+                if (Math.random() > 0.975) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(text, x, y);
+                    ctx.fillStyle = '#00ff9d';
+                }
+
+                if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 35);
+
+        // === EFFET GLITCH ALÉATOIRE ===
+        const glitchOverlay = document.getElementById('glitch-overlay');
+        const body = document.body;
+
+        function triggerGlitch() {
+            glitchOverlay.classList.add('active');
+            body.classList.add('glitch-shake');
+            const duration = Math.random() * 400 + 200;
+            setTimeout(() => {
+                glitchOverlay.classList.remove('active');
+                body.classList.remove('glitch-shake');
+            }, duration);
+        }
+
+        function scheduleGlitch() {
+            const delay = Math.random() * 8000 + 4000;
+            setTimeout(() => {
+                triggerGlitch();
+                scheduleGlitch();
+            }, delay);
+        }
+        setTimeout(scheduleGlitch, 3000);
+
+        // === SON D'AMBIANCE CYBERPUNK ===
+        const audio = document.getElementById('cyberpunk-ambiance');
+        const soundToggle = document.getElementById('sound-toggle');
+        let soundEnabled = false;
+
+        // Les navigateurs bloquent l'autoplay → on attend une interaction
+        soundToggle.addEventListener('click', () => {
+            if (soundEnabled) {
+                audio.pause();
+                soundToggle.classList.add('muted');
+                soundToggle.innerHTML = '🔇';
+                soundEnabled = false;
+            } else {
+                audio.volume = 0.3; // Volume doux
+                audio.play().catch(e => console.log("Audio bloqué :", e));
+                soundToggle.classList.remove('muted');
+                soundToggle.innerHTML = '🔊';
+                soundEnabled = true;
+            }
+        });
+
+        // Message discret pour inviter à activer le son
+        soundToggle.title = "Cliquez pour activer l'ambiance sonore cyberpunk";
+    </script>
+</body>
+</html>
